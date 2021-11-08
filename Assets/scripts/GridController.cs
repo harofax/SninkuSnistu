@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GridController : MonoBehaviour
 {
-    [SerializeField] 
+    [SerializeField]
     private MapTile tilePrefab;
     
     [SerializeField]
@@ -15,8 +15,16 @@ public class GridController : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        InitializeGrid();
+        ColifyGrid();
+    }
+
+    private void InitializeGrid()
+    {
+        Vector3 origin = transform.position;
+        
         // multiply by 0.5 instead of dividing by 2, according to Krister that is better.
-        Vector3 startPos = new Vector3(-gridDimensions.x * 0.5f, 0, -gridDimensions.y * 0.5f);
+        Vector3 startPos = new Vector3(origin.x - gridDimensions.x * 0.5f, origin.y, origin.z - gridDimensions.y * 0.5f);
         
         grid = new MapTile[gridDimensions.x, gridDimensions.y];
 
@@ -35,6 +43,17 @@ public class GridController : MonoBehaviour
                 newTile.name = $"Tile {x}, {y}";
                 
                 grid[x, y] = newTile;
+            }
+        }
+    }
+
+    private void ColifyGrid()
+    {
+        for (int y = 0; y < gridDimensions.y; y += 2)
+        {
+            for (int x = 0; x < gridDimensions.x; x += 2)
+            {
+                grid[y,x].GetComponentInChildren<Renderer>().material.color = Color.red;
             }
         }
     }
