@@ -11,12 +11,10 @@ public class GridController : MonoBehaviour
     private Vector2Int gridDimensions;
     
     private MapTile[,] grid;
-
-    // Start is called before the first frame update
+    
     void Awake()
     {
         InitializeGrid();
-        ColifyGrid();
     }
 
     private void InitializeGrid()
@@ -43,17 +41,6 @@ public class GridController : MonoBehaviour
                 newTile.name = $"Tile {x}, {y}";
                 
                 grid[x, y] = newTile;
-            }
-        }
-    }
-
-    private void ColifyGrid()
-    {
-        for (int y = 0; y < gridDimensions.y; y += 2)
-        {
-            for (int x = 0; x < gridDimensions.x; x += 2)
-            {
-                grid[y,x].GetComponentInChildren<Renderer>().material.color = Color.red;
             }
         }
     }
