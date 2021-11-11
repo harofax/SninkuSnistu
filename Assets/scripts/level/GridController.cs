@@ -11,9 +11,31 @@ public class GridController : MonoBehaviour
     private Vector2Int gridDimensions;
     
     private MapTile[,] grid;
-    
+
+    private float gridUnit;
+
+    private static GridController instance;
+
+    public static GridController Instance
+    {
+        get { return instance;
+        }
+    }
+
+    public float GridUnit => gridUnit;
+
     void Awake()
     {
+        if (instance != null && instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            instance = this;
+        }
+        
+        gridUnit = tilePrefab.transform.localScale.x;
         InitializeGrid();
     }
 
@@ -26,16 +48,12 @@ public class GridController : MonoBehaviour
         
         grid = new MapTile[gridDimensions.x, gridDimensions.y];
 
-        // Will always be a whole number, and will not change.
-        // Could make it a const field but this is more clear and less magic-number:y
-        int tileSize = (int) tilePrefab.transform.localScale.x;
-        
         for (int y = 0; y < gridDimensions.y; y++)
         {
             for (int x = 0; x < gridDimensions.x; x++)
             {
                 MapTile newTile = Instantiate(tilePrefab, transform);
-                Vector3 offset = new Vector3(x * tileSize, 0, y * tileSize);
+                Vector3 offset = new Vector3(x * gridUnit, 0, y * gridUnit);
                 newTile.transform.position = startPos + offset;
                 
                 newTile.name = $"Tile {x}, {y}";
