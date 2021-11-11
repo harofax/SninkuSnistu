@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Rotator : MonoBehaviour
 {
-    [SerializeField]
+    [SerializeField, Range(0, 90)]
     private float rotateAmount = 1f;
     // Start is called before the first frame update
     void Start()
