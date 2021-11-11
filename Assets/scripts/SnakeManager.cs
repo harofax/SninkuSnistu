@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SnakeManager : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject snakeBodyPart;
     
     void Start()
     {
@@ -26,5 +29,13 @@ public class SnakeManager : MonoBehaviour
     public void Move(float amount)
     {
         transform.position += transform.forward * amount;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.TryGetComponent(out FruitController fruit))
+        {
+            fruit.MoveToRandomPosition();
+        }
     }
 }

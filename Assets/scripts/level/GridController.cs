@@ -9,10 +9,12 @@ public class GridController : MonoBehaviour
     
     [SerializeField]
     private Vector2Int gridDimensions;
+    public Vector2Int GridDimensions => gridDimensions;
     
     private MapTile[,] grid;
 
     private float gridUnit;
+    public float GridUnit => gridUnit;
 
     private static GridController instance;
 
@@ -21,8 +23,6 @@ public class GridController : MonoBehaviour
         get { return instance;
         }
     }
-
-    public float GridUnit => gridUnit;
 
     void Awake()
     {
