@@ -10,13 +10,13 @@ public class TextureScroll : MonoBehaviour
     private Material mat;
     
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         mat = GetComponent<MeshRenderer>().material;
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
 
         mat.mainTextureOffset += offset * Time.deltaTime;

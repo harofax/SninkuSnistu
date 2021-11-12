@@ -7,24 +7,49 @@ using UnityEngine;
 public class SnakeManager : MonoBehaviour
 {
     [SerializeField]
-    private GameObject snakeBodyPart;
+    private SnakeBodyController snakeBodyPart;
 
-    private LinkusListus<Transform> snakedList = new LinkusListus<Transform>();
+    [SerializeField, Range(0.5f, 1f), Tooltip("The minimum potential scale the wobble will reach during a wobble")]
+    private float minWobbleScale = 0.8f;
+    
+    [SerializeField, Range(1f, 2f),   Tooltip("The maximum potential scale the wobble will reach during a wobble")]
+    private float maxWobbleScale = 1.5f;
+    
+    [SerializeField, Range(0.1f, 0.8f), Tooltip("The minimum potential duration a wobble can have (in seconds)")]
+    private float minWobbleRate = 0.5f;
+
+    [SerializeField, Range(0.8f, 1.8f), Tooltip("The maximum potential duration a wobble can have (in seconds)")]
+    private float maxWobbleRate = 1.0f;
+    
+    private readonly LinkusListus<Transform> snakedList = new LinkusListus<Transform>();
 
     private Vector3 previousPosition;
     
     private bool nom;
+    
+    private const float START_HEIGHT = 1f;
 
-    void Start()
+    private void Start()
     {
-         var firstBodyPart = Instantiate(snakeBodyPart, transform.position, Quaternion.identity);
-         snakedList.Add(firstBodyPart.transform);
-         var secondBodyPart = Instantiate(snakeBodyPart, firstBodyPart.transform.position, Quaternion.identity);
-         snakedList.Add(secondBodyPart.transform);
+        Vector3 startPos = GridController.Instance.GetRandomPosition(START_HEIGHT);
+        transform.position = startPos;
+
+        // float BASE_SCALE = snakeBodyPart.transform.localScale.x;
+        //
+        // minWobbleScale *= BASE_SCALE;
+        // maxWobbleScale *= BASE_SCALE;
+
+        var firstBodyPart = Instantiate(snakeBodyPart, transform.position, Quaternion.identity);
+        firstBodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleRate);
+        snakedList.Add(firstBodyPart.transform);
+        
+        var secondBodyPart = Instantiate(snakeBodyPart, firstBodyPart.transform.position, Quaternion.identity);
+        secondBodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleRate);
+        snakedList.Add(secondBodyPart.transform);
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
@@ -40,6 +65,7 @@ public class SnakeManager : MonoBehaviour
     private void AddBodyPart()
     {
         var bodyPart = Instantiate(snakeBodyPart, previousPosition, Quaternion.identity);
+        bodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleRate);
         snakedList.Add(bodyPart.transform);
     }
 

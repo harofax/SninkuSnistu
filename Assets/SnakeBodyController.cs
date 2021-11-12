@@ -7,19 +7,28 @@ public class SnakeBodyController : MonoBehaviour
 {
     private Wobblifier wobble;
     // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
         wobble = GetComponent<Wobblifier>();
+    }
 
-        float NORMAL_SCALE = 1f + GridController.Instance.GridUnit;
+    /// <summary>
+    /// Initializes wobbling parameters and starts the wobbling process
+    /// </summary>
+    /// <param name="maxWobbleScale">The maximum potential scale the body segment will reach during a wobble.</param>
+    /// <param name="minWobbleScale">The minimum potential scale the body segment will reach during a wobble.</param>
+    /// <param name="wobbleInterval">The maximum duration (in seconds) the wobble oscillation between MinWobbleScale and MaxWobbleScale will take.</param>
+    public void InitializeWobble(float minWobbleScale, float maxWobbleScale, float minWobbleDuration, float maxWobbleDuration)
+    {
+        float NORMAL_SCALE = transform.localScale.x;
 
-        float deviation = Random.Range(0.2f, 1.44f);
+        float SHRINK_SCALE = Random.Range(NORMAL_SCALE * minWobbleScale, NORMAL_SCALE);
+        float GROW_SCALE = Random.Range(NORMAL_SCALE, NORMAL_SCALE * maxWobbleScale);
         
-        wobble.MaxWobble = Random.Range(NORMAL_SCALE,             NORMAL_SCALE + deviation);
-        wobble.MinWobble = Random.Range(NORMAL_SCALE - deviation, NORMAL_SCALE);
+        wobble.MaxWobble = GROW_SCALE;
+        wobble.MinWobble = SHRINK_SCALE;
+        wobble.WobbleRate = Random.Range(minWobbleDuration, maxWobbleDuration);
 
-        wobble.WobbleRate = Random.Range(1f, 3.5f);
-        
         wobble.StartWobbling();
     }
 }

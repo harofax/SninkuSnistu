@@ -50,7 +50,7 @@ public class Wobblifier : MonoBehaviour
     //private float progress = 0f;
     
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         //wobbleTransform = transform;
         maxWobbleVector = Vector3.one * maxWobble;
@@ -63,6 +63,7 @@ public class Wobblifier : MonoBehaviour
 
     public void StartWobbling()
     {
+        StopAllCoroutines();
         StartCoroutine(WobbleOverTime(wobbleRate));
     } 
 
@@ -70,6 +71,7 @@ public class Wobblifier : MonoBehaviour
     {
         float progress = 0;
         Vector3 currentScale = transform.localScale;
+        
         while (progress < duration)
         {
             transform.localScale = Vector3.Lerp(currentScale, wobbleDir, progress / duration);
@@ -78,13 +80,14 @@ public class Wobblifier : MonoBehaviour
         }
 
         transform.localScale = wobbleDir;
-        bounce = !bounce;
-        wobbleDir = bounce ? minWobbleVector : maxWobbleVector;
+        
+        // toggle the wobbleDir from grow to shrink
+        wobbleDir = wobbleDir == maxWobbleVector ? minWobbleVector : maxWobbleVector;
         StartCoroutine(WobbleOverTime(wobbleRate));
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         // print("----- " + this.name + " -------");
         // progress += wobbleRate * Time.deltaTime;
@@ -104,4 +107,36 @@ public class Wobblifier : MonoBehaviour
         // }
         // print("----------------------------");
     }
+    
+    /* ----- ASK VOLODYMYR
+    private IEnumerator WobbleGrow(float duration)
+    {
+        float progress = 0;
+        Vector3 currentScale = transform.localScale;
+        while (progress < duration)
+        {
+            transform.localScale = Vector3.Lerp(currentScale, maxWobbleVector, progress / duration);
+            progress += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+
+        transform.localScale = maxWobbleVector;
+        StartCoroutine(WobbleShrink(wobbleRate));
+    }
+
+    private IEnumerator WobbleShrink(float duration)
+    {
+        float progress = 0;
+        Vector3 currentScale = transform.localScale;
+        while (progress < duration)
+        {
+            transform.localScale = Vector3.Lerp(currentScale, minWobbleVector, progress / duration);
+            progress += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+
+        transform.localScale = minWobbleVector;
+        StartCoroutine(WobbleGrow(wobbleRate));
+    }
+     */
 }

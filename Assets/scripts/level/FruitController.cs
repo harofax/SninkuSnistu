@@ -5,13 +5,13 @@ using UnityEngine;
 public class FruitController : MonoBehaviour
 {
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
        MoveToRandomPosition();
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         
     }

@@ -18,20 +18,16 @@ public class GameManager : MonoBehaviour
     private float tickTime = 0.2f;
 
     private float timer = 0f;
-    private const float YPlane = 1f;
 
     // Start is called before the first frame update
-    void Awake()
+    private void Awake()
     {
-        Vector3 startPos = GridController.Instance.GetRandomPosition(YPlane);
-        player = Instantiate(player, startPos, Quaternion.identity);
-        
         cinecam.Follow = player.transform;
         cinecam.LookAt = player.transform;
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         timer += Time.deltaTime;
         if (timer >= tickTime)

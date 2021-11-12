@@ -10,15 +10,16 @@ using System.Collections;
 public class PixelBoy : MonoBehaviour
 {
     public int h = 64;
-    int w;
+    private int w;
 
-    void Update()
+    private void Update()
     {
  
         float ratio = ((float)Camera.main.pixelWidth) / (float)Camera.main.pixelHeight;
         w = Mathf.RoundToInt(h * ratio);
     }
-    void OnRenderImage(RenderTexture source, RenderTexture destination)
+
+    private void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
         source.filterMode = FilterMode.Point;
         RenderTexture buffer = RenderTexture.GetTemporary(w, h, -1);

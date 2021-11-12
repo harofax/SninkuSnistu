@@ -18,13 +18,9 @@ public class GridController : MonoBehaviour
 
     private static GridController instance;
 
-    public static GridController Instance
-    {
-        get { return instance;
-        }
-    }
+    public static GridController Instance => instance;
 
-    void Awake()
+    private void Awake()
     {
         if (instance != null && instance != this)
         {
@@ -43,13 +39,8 @@ public class GridController : MonoBehaviour
 
     public Vector3 GetRandomPosition(float yLevel)
     {
-        Vector2Int gridSpan = GridDimensions / 2;
-
-        // int x = Random.Range(-gridSpan.x, gridSpan.x + 1);
-        // int z = Random.Range(-gridSpan.y, gridSpan.y + 1);
-
-        int x = Random.Range(0, gridDimensions.x);
-        int z = Random.Range(0, gridDimensions.y);
+        int x = Random.Range(0, gridDimensions.x * gridUnit);
+        int z = Random.Range(0, gridDimensions.y * gridUnit);
 
         x = Mathf.CeilToInt(x / gridUnit) * gridUnit;
         z = Mathf.CeilToInt(z / gridUnit) * gridUnit;
@@ -62,10 +53,6 @@ public class GridController : MonoBehaviour
     private void InitializeGrid()
     {
         Vector3 origin = transform.position; // + new Vector3(gridUnit/2f, 0, gridUnit/2f);
-
-        Vector2Int gridSpan = gridDimensions / 2;
-        
-        Vector3 startPos = new Vector3(origin.x - gridSpan.x, origin.y, origin.z - gridSpan.y);
 
         grid = new MapTile[gridDimensions.x, gridDimensions.y];
 
