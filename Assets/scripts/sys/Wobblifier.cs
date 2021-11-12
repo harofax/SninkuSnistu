@@ -16,13 +16,21 @@ public class Wobblifier : MonoBehaviour
     public float MaxWobble
     {
         get => maxWobble;
-        set => maxWobble = value;
+        set
+        {
+            maxWobble = value;
+            maxWobbleVector = Vector3.one * maxWobble;
+        }
     }
 
     public float MinWobble
     {
         get => minWobble;
-        set => minWobble = value;
+        set
+        {
+            minWobble = value;
+            minWobbleVector = Vector3.one * minWobble;
+        }
     }
 
     public float WobbleRate

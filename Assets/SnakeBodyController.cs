@@ -11,14 +11,13 @@ public class SnakeBodyController : MonoBehaviour
     {
         wobble = GetComponent<Wobblifier>();
 
-        const float NORMAL_SCALE = 1f;
+        float NORMAL_SCALE = 1f + GridController.Instance.GridUnit;
 
-        float deviation = Random.Range(0f, 0.8f);
+        float deviation = Random.Range(0.2f, 1.44f);
         
         wobble.MaxWobble = Random.Range(NORMAL_SCALE,             NORMAL_SCALE + deviation);
         wobble.MinWobble = Random.Range(NORMAL_SCALE - deviation, NORMAL_SCALE);
 
-        wobble.WobbleRate = Random.Range(0.5f, 1.5f);
-
+        wobble.WobbleRate = Random.Range(1f, 3.5f);
     }
 }
