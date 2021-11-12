@@ -19,5 +19,7 @@ public class SnakeBodyController : MonoBehaviour
         wobble.MinWobble = Random.Range(NORMAL_SCALE - deviation, NORMAL_SCALE);
 
         wobble.WobbleRate = Random.Range(1f, 3.5f);
+        
+        wobble.StartWobbling();
     }
 }

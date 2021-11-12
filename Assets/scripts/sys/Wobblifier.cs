@@ -39,7 +39,7 @@ public class Wobblifier : MonoBehaviour
         set => wobbleRate = value;
     }
 
-    private Transform wobbleTransform;
+    //private Transform wobbleTransform;
     
     private Vector3 maxWobbleVector;
     private Vector3 minWobbleVector;
@@ -47,31 +47,61 @@ public class Wobblifier : MonoBehaviour
     private Vector3 wobbleDir;
 
     private bool bounce;
-    private float progress;
+    //private float progress = 0f;
     
     // Start is called before the first frame update
     void Start()
     {
-        wobbleTransform = transform;
+        //wobbleTransform = transform;
         maxWobbleVector = Vector3.one * maxWobble;
         minWobbleVector = Vector3.one * minWobble;
 
         wobbleDir = maxWobbleVector;
+
+        StartWobbling();
+    }
+
+    public void StartWobbling()
+    {
+        StartCoroutine(WobbleOverTime(wobbleRate));
+    } 
+
+    private IEnumerator WobbleOverTime(float duration)
+    {
+        float progress = 0;
+        Vector3 currentScale = transform.localScale;
+        while (progress < duration)
+        {
+            transform.localScale = Vector3.Lerp(currentScale, wobbleDir, progress / duration);
+            progress += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+
+        transform.localScale = wobbleDir;
+        bounce = !bounce;
+        wobbleDir = bounce ? minWobbleVector : maxWobbleVector;
+        StartCoroutine(WobbleOverTime(wobbleRate));
     }
 
     // Update is called once per frame
     void Update()
     {
-        progress += wobbleRate * Time.deltaTime;
-        wobbleTransform.localScale = Vector3.Lerp(transform.localScale, wobbleDir, progress * Time.deltaTime);
-
-        if (progress >= 1)
-        {
-            progress = 0f;
-            bounce = !bounce;
-            wobbleDir = bounce ? minWobbleVector : maxWobbleVector;
-            
-        }
-        
+        // print("----- " + this.name + " -------");
+        // progress += wobbleRate * Time.deltaTime;
+        // print("progress now: " + progress);
+        // print("amount to lerp: " + progress * Time.deltaTime);
+        // transform.localScale = Vector3.Lerp(transform.localScale, wobbleDir, progress * Time.deltaTime);
+        //
+        // if (progress >= 1)
+        // {
+        //     
+        //     print("ping, progress=" + progress);
+        //     progress = 0f;
+        //     print("progress cleared: " + progress);
+        //     bounce = !bounce;
+        //     wobbleDir = bounce ? minWobbleVector : maxWobbleVector;
+        //     
+        // }
+        // print("----------------------------");
     }
 }
