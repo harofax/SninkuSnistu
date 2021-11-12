@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class Wobblifier : MonoBehaviour
 {
-    [SerializeField, Range(1f, 3f)]
+    [SerializeField]
     private float maxWobble;
 
-    [SerializeField, Range(0.5f, 1f)] 
+    [SerializeField] 
     private float minWobble;
 
-    [SerializeField, Range(0.3f, 2f)] 
+    [SerializeField] 
     private float wobbleRate;
 
     public float MaxWobble

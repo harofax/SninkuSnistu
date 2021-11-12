@@ -23,7 +23,9 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        player = Instantiate(player, GridController.Instance.GetRandomPosition(YPlane), Quaternion.identity);
+        Vector3 startPos = GridController.Instance.GetRandomPosition(YPlane);
+        player = Instantiate(player, startPos, Quaternion.identity);
+        
         cinecam.Follow = player.transform;
         cinecam.LookAt = player.transform;
     }
