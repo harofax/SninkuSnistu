@@ -33,7 +33,7 @@ public class FruitAntenna : MonoBehaviour
     private void Start()
     {
         targetVector = fruitTransform.position - transform.position;
-        proximityRange = GridController.Instance.GridDimensions.magnitude; //* GridController.Instance.GridUnit;
+        proximityRange = GridController.Instance.GridDimensions.magnitude * GridController.Instance.GridUnit;
     }
 
     // Update is called once per frame

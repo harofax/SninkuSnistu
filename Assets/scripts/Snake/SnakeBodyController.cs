@@ -20,7 +20,7 @@ public class SnakeBodyController : MonoBehaviour
     /// <param name="wobbleInterval">The maximum duration (in seconds) the wobble oscillation between MinWobbleScale and MaxWobbleScale will take.</param>
     public void InitializeWobble(float minWobbleScale, float maxWobbleScale, float minWobbleDuration, float maxWobbleDuration)
     {
-        float NORMAL_SCALE = transform.localScale.x;
+        float NORMAL_SCALE = 1f;
 
         float SHRINK_SCALE = Random.Range(NORMAL_SCALE * minWobbleScale, NORMAL_SCALE);
         float GROW_SCALE = Random.Range(NORMAL_SCALE, NORMAL_SCALE * maxWobbleScale);

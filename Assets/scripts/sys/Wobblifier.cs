@@ -19,7 +19,7 @@ public class Wobblifier : MonoBehaviour
         set
         {
             maxWobble = value;
-            maxWobbleVector = Vector3.one * maxWobble;
+            maxWobbleVector = transform.localScale * maxWobble;
         }
     }
 
@@ -29,7 +29,7 @@ public class Wobblifier : MonoBehaviour
         set
         {
             minWobble = value;
-            minWobbleVector = Vector3.one * minWobble;
+            minWobbleVector = transform.localScale * minWobble;
         }
     }
 
@@ -52,9 +52,9 @@ public class Wobblifier : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        //wobbleTransform = transform;
-        maxWobbleVector = Vector3.one * maxWobble;
-        minWobbleVector = Vector3.one * minWobble;
+        Vector3 wobbleScale = transform.localScale;
+        maxWobbleVector = wobbleScale * maxWobble;
+        minWobbleVector = wobbleScale * minWobble;
 
         wobbleDir = maxWobbleVector;
 

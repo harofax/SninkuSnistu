@@ -9,11 +9,14 @@ public class GridController : MonoBehaviour
     
     [SerializeField]
     private Vector2Int gridDimensions;
+    
+    [SerializeField, Range(1, 6)]
+    private int gridUnit = 2;
+    
     public Vector2Int GridDimensions => gridDimensions;
     
     private MapTile[,] grid;
 
-    private int gridUnit = 2;
     public int GridUnit => gridUnit;
 
     private static GridController instance;
