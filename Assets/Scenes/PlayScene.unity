@@ -415,6 +415,11 @@ MonoBehaviour:
   maxWobble: 1.772
   minWobble: 0.5
   wobbleRate: 1.147
+--- !u!4 &921469965 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 424631842143512084, guid: 42769008d339ca34eb9d27a15afad165, type: 3}
+  m_PrefabInstance: {fileID: 1141177405}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &985387326
 GameObject:
   m_ObjectHideFlags: 0
@@ -509,6 +514,23 @@ Transform:
   m_Father: {fileID: 229491427}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: -30, z: 0}
+--- !u!1 &1041801098 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 247387283, guid: daa4e5104d1d0764ba53e1652dd11b93, type: 3}
+  m_PrefabInstance: {fileID: 1828893036}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1041801102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1041801098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57ef4589733cd8e44a1d8baa1ae76007, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1141177405
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -588,30 +610,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1144846362, guid: daa4e5104d1d0764ba53e1652dd11b93, type: 3}
-      propertyPath: wobbleRate
-      value: 0.855
-      objectReference: {fileID: 0}
-    - target: {fileID: 1144846362, guid: daa4e5104d1d0764ba53e1652dd11b93, type: 3}
-      propertyPath: maxWobbleRate
-      value: 1.21
-      objectReference: {fileID: 0}
-    - target: {fileID: 1144846362, guid: daa4e5104d1d0764ba53e1652dd11b93, type: 3}
-      propertyPath: minWobbleRate
-      value: 0.653
-      objectReference: {fileID: 0}
-    - target: {fileID: 1144846362, guid: daa4e5104d1d0764ba53e1652dd11b93, type: 3}
-      propertyPath: snakeBodyPart
+    - target: {fileID: 1490636471, guid: daa4e5104d1d0764ba53e1652dd11b93, type: 3}
+      propertyPath: eyeMaterial
       value: 
-      objectReference: {fileID: 4960749748930705336, guid: 2f54bcf7b607059439f3d2a25c1975fd, type: 3}
-    - target: {fileID: 1144846362, guid: daa4e5104d1d0764ba53e1652dd11b93, type: 3}
-      propertyPath: maxWobbleScale
-      value: 1.43
+      objectReference: {fileID: 2100000, guid: 3865923f9f69a2a41a87a33cd68d8e63, type: 2}
+    - target: {fileID: 1490636471, guid: daa4e5104d1d0764ba53e1652dd11b93, type: 3}
+      propertyPath: turningSpeed
+      value: 5.88
       objectReference: {fileID: 0}
-    - target: {fileID: 1144846362, guid: daa4e5104d1d0764ba53e1652dd11b93, type: 3}
-      propertyPath: minWobbleScale
-      value: 0.952
-      objectReference: {fileID: 0}
+    - target: {fileID: 1490636471, guid: daa4e5104d1d0764ba53e1652dd11b93, type: 3}
+      propertyPath: fruitTransform
+      value: 
+      objectReference: {fileID: 921469965}
+    - target: {fileID: 1490636471, guid: daa4e5104d1d0764ba53e1652dd11b93, type: 3}
+      propertyPath: proximityOrbMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 3865923f9f69a2a41a87a33cd68d8e63, type: 2}
     - target: {fileID: 4357311339113508084, guid: daa4e5104d1d0764ba53e1652dd11b93, type: 3}
       propertyPath: m_RootOrder
       value: 6
@@ -626,7 +640,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4357311339113508084, guid: daa4e5104d1d0764ba53e1652dd11b93, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 32.666
+      value: 5.64
       objectReference: {fileID: 0}
     - target: {fileID: 4357311339113508084, guid: daa4e5104d1d0764ba53e1652dd11b93, type: 3}
       propertyPath: m_LocalRotation.w

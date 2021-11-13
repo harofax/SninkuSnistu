@@ -9,11 +9,18 @@ public class SnakeManager : MonoBehaviour
     [SerializeField]
     private SnakeBodyController snakeBodyPart;
 
+    [SerializeField]
+    private FruitAntenna antenna;
+
+    [Space(15f)]
+    
     [SerializeField, Range(0.5f, 1f), Tooltip("The minimum potential scale the wobble will reach during a wobble")]
     private float minWobbleScale = 0.8f;
     
     [SerializeField, Range(1f, 2f),   Tooltip("The maximum potential scale the wobble will reach during a wobble")]
     private float maxWobbleScale = 1.5f;
+    
+    [Space(10f)]
     
     [SerializeField, Range(0.1f, 0.8f), Tooltip("The minimum potential duration a wobble can have (in seconds)")]
     private float minWobbleRate = 0.5f;
@@ -33,11 +40,6 @@ public class SnakeManager : MonoBehaviour
     {
         Vector3 startPos = GridController.Instance.GetRandomPosition(START_HEIGHT);
         transform.position = startPos;
-
-        // float BASE_SCALE = snakeBodyPart.transform.localScale.x;
-        //
-        // minWobbleScale *= BASE_SCALE;
-        // maxWobbleScale *= BASE_SCALE;
 
         var firstBodyPart = Instantiate(snakeBodyPart, transform.position, Quaternion.identity);
         firstBodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleRate);
@@ -75,6 +77,7 @@ public class SnakeManager : MonoBehaviour
         previousPosition = headTransform.position;
         headTransform.position += headTransform.forward * amount;
         MoveBodyParts();
+        antenna.UpdateFruitDirection();
     }
 
     private void MoveBodyParts()
