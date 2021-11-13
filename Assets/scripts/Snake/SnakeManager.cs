@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using ADT;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SnakeManager : MonoBehaviour
@@ -28,7 +29,8 @@ public class SnakeManager : MonoBehaviour
     [SerializeField, Range(0.8f, 1.8f), Tooltip("The maximum potential duration a wobble can have (in seconds)")]
     private float maxWobbleRate = 1.0f;
     
-    private readonly LinkusListus<Transform> snakedList = new LinkusListus<Transform>();
+    private readonly LinkusListus<GameObject> snakedList = new LinkusListus<GameObject>();
+    private HashSet<Vector3> bodyPartPositions = new HashSet<Vector3>();
 
     private Vector3 previousPosition;
     
@@ -41,13 +43,13 @@ public class SnakeManager : MonoBehaviour
         Vector3 startPos = GridController.Instance.GetRandomPosition(START_HEIGHT);
         transform.position = startPos;
 
-        var firstBodyPart = Instantiate(snakeBodyPart, transform.position, Quaternion.identity);
-        firstBodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleRate);
-        snakedList.Add(firstBodyPart.transform);
-        
-        var secondBodyPart = Instantiate(snakeBodyPart, firstBodyPart.transform.position, Quaternion.identity);
-        secondBodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleRate);
-        snakedList.Add(secondBodyPart.transform);
+        // var firstBodyPart = Instantiate(snakeBodyPart, transform.position, Quaternion.identity);
+        // firstBodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleRate);
+        // snakedList.Add(firstBodyPart.gameObject);
+        //
+        // var secondBodyPart = Instantiate(snakeBodyPart, firstBodyPart.transform.position, Quaternion.identity);
+        // secondBodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleRate);
+        // snakedList.Add(secondBodyPart.gameObject);
     }
 
     // Update is called once per frame
@@ -67,25 +69,46 @@ public class SnakeManager : MonoBehaviour
     private void AddBodyPart()
     {
         var bodyPart = Instantiate(snakeBodyPart, previousPosition, Quaternion.identity);
+        bodyPart.name = "body segment " + snakedList.Count;
         bodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleRate);
-        snakedList.Add(bodyPart.transform);
+        //snakedList.Add(bodyPart.gameObject);
+        
+        snakedList.Add(bodyPart.gameObject);
+        //MoveBodyParts();
+        //previousPosition = transform.position;
+        //bodyPartPositions.Add(previousPosition);
     }
 
     public void Move(float amount)
     {
-        var headTransform = transform;
-        previousPosition = headTransform.position;
-        headTransform.position += headTransform.forward * amount;
+        Transform headTransform = transform;
+        Vector3 position = headTransform.position;
+        
+        previousPosition = position;
+
+        position += headTransform.forward * amount;
+        headTransform.position = position;
+
         MoveBodyParts();
         antenna.UpdateFruitDirection();
     }
 
     private void MoveBodyParts()
     {
-        for (int i = 0; i < snakedList.Count; i++)
-        {
-            (snakedList[i].position, previousPosition) = (previousPosition, snakedList[i].position);
-        }
+        // for (int i = 0; i < snakedList.Count; i++)
+        // {
+        //     (snakedList[i].transform.position, previousPosition) = (previousPosition, snakedList[i].transform.position);
+        // }
+        
+        if (snakedList.Count == 0) return;
+
+        int tailIndex = snakedList.Count - 1;
+        Transform lastBodyPart = snakedList.Tail.transform;
+        lastBodyPart.position = previousPosition;
+
+        snakedList.RemoveAt(tailIndex);
+        snakedList.AddFirst(lastBodyPart.gameObject);
+
         nom = false;
     }
 

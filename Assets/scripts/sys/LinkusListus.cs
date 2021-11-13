@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Xml.XPath;
-using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 namespace ADT
@@ -24,6 +23,9 @@ namespace ADT
         private ListNode head;
         private ListNode tail;
         private int count;
+        public int Count => count;
+        public T Tail => tail.nodeItem;
+        
 
         public LinkusListus()
         {
@@ -31,9 +33,6 @@ namespace ADT
             tail = null;
             count = 0;
         }
-
-        public int Count => count;
-        public T Tail => tail.nodeItem;
 
         public int IndexOf(T item)
         {
@@ -50,7 +49,7 @@ namespace ADT
                 idx++;
                 currentNode = currentNode.nextNode;
             }
-
+            
             return -1;
         }
 
@@ -88,13 +87,16 @@ namespace ADT
             count++;
         }
 
+        public void AddFirst(T item)
+        {
+            ListNode newHead = new ListNode(item, head);
+            head = newHead;
+            if (count == 0) tail = head;
+            count++;
+        }
+
         public void Insert(int index, T item)
         {
-            if (index > count || index < 0)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-
             ListNode currentNode = head;
             ListNode previousNode = head;
 
@@ -102,17 +104,17 @@ namespace ADT
             {
                 ListNode newHead = new ListNode(item, currentNode);
                 head = newHead;
+                if (count == 0) tail = head;
                 count++;
                 return;
             }
-
-            if (index == count)
+            
+            if (index >= count || index < 0)
             {
-                ListNode newTail = new ListNode(item, null);
-                tail.nextNode = newTail;
-                tail = newTail;
-                count++;
+                throw new ArgumentOutOfRangeException();
             }
+
+            
 
             for (int curIndex = 0; curIndex < index; curIndex++)
             {
@@ -143,8 +145,9 @@ namespace ADT
                 count--;
                 return;
             }
-
-            for (int curIndex = 0; curIndex < index; curIndex++)
+            
+            int curIndex = 0;
+            while (curIndex < index)
             {
                 previousNode = currentNode;
                 currentNode = currentNode.nextNode;
@@ -152,6 +155,14 @@ namespace ADT
                 curIndex++;
             }
 
+            if (currentNode == tail)
+            {
+                previousNode.nextNode = null;
+                tail = previousNode;
+                count--;
+                return;
+            }
+            
             previousNode.nextNode = currentNode.nextNode;
             count--;
         }
