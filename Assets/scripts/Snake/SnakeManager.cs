@@ -43,13 +43,16 @@ public class SnakeManager : MonoBehaviour
         Vector3 startPos = GridController.Instance.GetRandomPosition(START_HEIGHT);
         transform.position = startPos;
 
-        var firstBodyPart = Instantiate(snakeBodyPart, transform.position, Quaternion.identity);
-        firstBodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleRate);
-        snakedList.AddFirst(firstBodyPart.transform);
-        
-        var secondBodyPart = Instantiate(snakeBodyPart, firstBodyPart.transform.position, Quaternion.identity);
-        secondBodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleRate);
-        snakedList.AddFirst(secondBodyPart.transform);
+        AddBodyPart();
+        AddBodyPart();
+
+        // var firstBodyPart = Instantiate(snakeBodyPart, transform.position, Quaternion.identity);
+        // firstBodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleRate);
+        // snakedList.AddFirst(firstBodyPart.transform);
+        //
+        // var secondBodyPart = Instantiate(snakeBodyPart, firstBodyPart.transform.position, Quaternion.identity);
+        // secondBodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleRate);
+        // snakedList.AddFirst(secondBodyPart.transform);
     }
 
     // Update is called once per frame
@@ -73,16 +76,26 @@ public class SnakeManager : MonoBehaviour
         bodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleRate);
 
         snakedList.Add(bodyPart.transform);
+        bodyPartPositions.Add(bodyPart.transform.position);
     }
 
-    public void Move(float amount)
+    public void Move(int amount)
     {
         Transform headTransform = transform;
         Vector3 position = headTransform.position;
         
         previousPosition = position;
 
-        position += headTransform.forward * amount;
+        Vector3 nextPosition = position + headTransform.forward * amount;
+
+        if (bodyPartPositions.Contains(nextPosition))
+        {
+            nextPosition += transform.up * amount;
+        }
+        
+        //position += headTransform.forward * amount;
+        position = nextPosition;
+        
         headTransform.position = position;
 
         MoveBodyParts();
@@ -99,8 +112,16 @@ public class SnakeManager : MonoBehaviour
         if (snakedList.Count == 0) return;
 
         int tailIndex = snakedList.Count - 1;
+        
         Transform lastBodyPart = snakedList.Tail.transform;
-        lastBodyPart.position = previousPosition;
+        Vector3 position = lastBodyPart.position;
+        
+        bodyPartPositions.Remove(position);
+        
+        position = previousPosition;
+        lastBodyPart.position = position;
+        
+        bodyPartPositions.Add(position);
 
         snakedList.RemoveAt(tailIndex);
         snakedList.AddFirst(lastBodyPart);
