@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class GridController : MonoBehaviour
 {
@@ -53,6 +55,16 @@ public class GridController : MonoBehaviour
         return randomPosition;
     }
 
+    public MapTile GetTile(int x, int y)
+    {
+        if ((x < 0 || x > gridDimensions.x) || (y < 0 || y > gridDimensions.y))
+        {
+            throw new ArgumentOutOfRangeException();
+        }
+
+        return grid[x, y];
+    }
+
     private void InitializeGrid()
     {
         Vector3 origin = transform.position; // + new Vector3(gridUnit/2f, 0, gridUnit/2f);
@@ -68,7 +80,7 @@ public class GridController : MonoBehaviour
                 Vector3 offset = new Vector3(x * gridUnit, 0, y * gridUnit);
 
                 newTile.transform.position = offset;
-                newTile.name = $"Tile [{origin.x + offset.x}, {origin.z + offset.z}]";
+                newTile.name = $"Tile [{x}, {y}]";
                 
                 grid[x, y] = newTile;
             }

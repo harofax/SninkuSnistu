@@ -46,4 +46,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grid: {fileID: 0}
   player: {fileID: 0}
+  cinecam: {fileID: 0}
   tickTime: 0.2

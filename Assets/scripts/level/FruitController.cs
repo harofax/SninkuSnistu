@@ -18,12 +18,6 @@ public class FruitController : MonoBehaviour
 
     public void MoveToRandomPosition()
     {
-        // Vector2Int gridDimensions = GridController.Instance.GridDimensions / 2;
-        //
-        // int x = Random.Range(-gridDimensions.x, gridDimensions.x);
-        // int z = Random.Range(-gridDimensions.y, gridDimensions.y);
-        //
-        // Vector3 newPosition = new Vector3(x, transform.position.y, z);
         transform.position = GridController.Instance.GetRandomPosition(transform.position.y);
     }
 }

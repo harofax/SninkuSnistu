@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security;
 using ADT;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -29,30 +30,78 @@ public class SnakeManager : MonoBehaviour
     [SerializeField, Range(0.8f, 1.8f), Tooltip("The maximum potential duration a wobble can have (in seconds)")]
     private float maxWobbleRate = 1.0f;
     
-    private readonly LinkusListus<Transform> snakedList = new LinkusListus<Transform>();
-    private HashSet<Vector3> bodyPartPositions = new HashSet<Vector3>();
-
-    private Vector3 previousPosition;
-    
-    private bool nom;
-    
     private const float START_HEIGHT = 2f;
+    
+    private readonly LinkusListus<Transform> snakedList = new LinkusListus<Transform>();
+    private readonly HashSet<Vector3> bodyPartPositions = new HashSet<Vector3>();
+
+    private int moveAmount;
+    
+    private Vector3 previousPosition;
+    private Vector3 nextDir;
+    
+    private bool isEating;
+    
+    private void OnEnable()
+    {
+        GameManager.OnTick += Move;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnTick -= Move;
+    }
 
     private void Start()
     {
+        // print("initial forward: " + transform.forward);
         Vector3 startPos = GridController.Instance.GetRandomPosition(START_HEIGHT);
+        
+        Vector2Int middleOfGrid = GridController.Instance.GridDimensions / 2;
+        
         transform.position = startPos;
 
-        AddBodyPart();
-        AddBodyPart();
-
-        // var firstBodyPart = Instantiate(snakeBodyPart, transform.position, Quaternion.identity);
-        // firstBodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleRate);
-        // snakedList.AddFirst(firstBodyPart.transform);
+        Vector3 middleTilePos = GridController.Instance.GetTile(middleOfGrid.x, middleOfGrid.y).transform.position;
+        
+        // print("midlZ - startZ: " + (middleTilePos.z - startPos.z));
+        // print("midlX - startX: " + (middleTilePos.x - startPos.x));
         //
-        // var secondBodyPart = Instantiate(snakeBodyPart, firstBodyPart.transform.position, Quaternion.identity);
-        // secondBodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleRate);
-        // snakedList.AddFirst(secondBodyPart.transform);
+        // print("startpos2d: " + startPos2D);
+        //
+        // print("midl vec - startvec: " + (middleOfGrid - startPos2D));
+
+        float xDiff = middleTilePos.x - startPos.x;
+        float zDiff = middleTilePos.z - startPos.z;
+        
+        if (Mathf.Abs(xDiff) > Mathf.Abs(zDiff))
+        {
+            transform.forward = Vector3.right * Mathf.Sign(xDiff);
+        }
+        else
+        {
+            transform.forward = Vector3.forward * Mathf.Sign(zDiff);
+        }
+
+        // if (startPos.z > middleTilePos.z)
+        // {
+        //     print("start z is bigger");
+        //     transform.forward = Vector3.right;
+        // }
+        //
+        // if (startPos.x > middleTilePos.x)
+        // {
+        //     print("start x is bigger");
+        //     transform.forward = Vector3.left;
+        // }
+        //
+        // print("adjusted forward: " + transform.forward);
+
+        nextDir = transform.forward;
+
+        moveAmount = GridController.Instance.GridUnit;
+        
+        AddBodyPart();
+        AddBodyPart();
     }
 
     // Update is called once per frame
@@ -60,46 +109,42 @@ public class SnakeManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            transform.forward = -transform.right;
+            nextDir = -transform.right;
         }
 
         if (Input.GetKeyDown(KeyCode.D))
         {
-            transform.forward = transform.right;
+            nextDir = transform.right;
         }
     }
 
     private void AddBodyPart()
     {
         var bodyPart = Instantiate(snakeBodyPart, previousPosition, Quaternion.identity);
-        bodyPart.name = "body segment " + snakedList.Count;
+        bodyPart.name = "body segment #" + snakedList.Count;
         bodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleRate);
 
         snakedList.Add(bodyPart.transform);
         bodyPartPositions.Add(bodyPart.transform.position);
     }
 
-    public void Move(int amount)
+    public void Move()
     {
         Transform headTransform = transform;
+        headTransform.forward = nextDir;
         Vector3 position = headTransform.position;
         
         previousPosition = position;
 
-        Vector3 nextPosition = position + headTransform.forward * amount;
+        Vector3 nextPosition = position + headTransform.forward * moveAmount;
 
         if (bodyPartPositions.Contains(nextPosition))
         {
-            nextPosition += transform.up * amount;
+            nextPosition += transform.up * moveAmount;
         }
-        
-        //position += headTransform.forward * amount;
-        position = nextPosition;
-        
-        headTransform.position = position;
 
+        headTransform.position = nextPosition;
         MoveBodyParts();
-        antenna.UpdateFruitDirection();
     }
 
     private void MoveBodyParts()
@@ -126,14 +171,14 @@ public class SnakeManager : MonoBehaviour
         snakedList.RemoveAt(tailIndex);
         snakedList.AddFirst(lastBodyPart);
 
-        nom = false;
+        isEating = false;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!nom && other.TryGetComponent(out FruitController fruit))
+        if (!isEating && other.TryGetComponent(out FruitController fruit))
         {
-            nom = true;
+            isEating = true;
             fruit.MoveToRandomPosition();
             AddBodyPart();
         }

@@ -177,7 +177,6 @@ GameObject:
   - component: {fileID: 247387284}
   - component: {fileID: 247387287}
   - component: {fileID: 247387286}
-  - component: {fileID: 1041801102}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -250,18 +249,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1041801102
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 247387283}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 57ef4589733cd8e44a1d8baa1ae76007, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &879011266
 GameObject:
   m_ObjectHideFlags: 0
@@ -389,17 +376,17 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 0.9689895, g: 1, b: 0.8254717, a: 1}
-  m_Intensity: 1.4
+  m_Intensity: 2.59
   m_Range: 43.72
-  m_SpotAngle: 62.8
+  m_SpotAngle: 43.2
   m_InnerSpotAngle: 17.6
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
+    m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
-    m_Bias: 0.05
+    m_Bias: 0.16
     m_NormalBias: 0.4
     m_NearPlane: 0.2
     m_CullingMatrixOverride:
@@ -571,7 +558,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fruitTransform: {fileID: 0}
   eyeMaterial: {fileID: 2100000, guid: 3865923f9f69a2a41a87a33cd68d8e63, type: 2}
-  turningSpeed: 5.88
+  turningSpeed: 2.56
   FAR_EMISSION_COLOUR:
     serializedVersion: 2
     rgba: 4286251263
@@ -640,7 +627,7 @@ Transform:
   m_GameObject: {fileID: 4357311339113508088}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.4, y: 0.691, z: 74.666}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 194003837}
@@ -743,8 +730,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   snakeBodyPart: {fileID: 4960749748930705336, guid: 2f54bcf7b607059439f3d2a25c1975fd, type: 3}
   antenna: {fileID: 1490636471}
-  minWobbleScale: 0.952
-  maxWobbleScale: 1.43
+  minWobbleScale: 0.928
+  maxWobbleScale: 1.523
   minWobbleRate: 0.653
   maxWobbleRate: 1.21
 --- !u!1 &4974101654310477930

@@ -11,15 +11,13 @@ public class FruitAntenna : MonoBehaviour
     [SerializeField]
     private Material eyeMaterial;
     
-    [SerializeField, Range(1f, 8f)]
+    [SerializeField, Range(0.1f, 10f)]
     private float turningSpeed;
     
     private float proximityRange;
     
     private Vector3 targetVector;
-
-    // TODO: remove the color stuff
-  
+    
     [SerializeField]
     private Color32 FAR_EMISSION_COLOUR = new Color(219, 0, 48);
 
@@ -32,8 +30,18 @@ public class FruitAntenna : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        targetVector = fruitTransform.position - transform.position;
+        //targetVector = fruitTransform.position - transform.position;
         proximityRange = GridController.Instance.GridDimensions.magnitude * GridController.Instance.GridUnit;
+    }
+
+    private void OnEnable()
+    {
+        GameManager.OnTick += RefreshAntenna;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnTick -= RefreshAntenna;
     }
 
     // Update is called once per frame
@@ -42,10 +50,9 @@ public class FruitAntenna : MonoBehaviour
         transform.up = Vector3.MoveTowards(transform.up, targetVector, Time.deltaTime * turningSpeed);
 
         eyeMaterial.SetColor(EmissionColor, Color.Lerp(NEAR_EMISSION_COLOUR, FAR_EMISSION_COLOUR, distance / proximityRange));
-        // TODO: FIX THIS, try lerping hue in HSBColor instead??
     }
 
-    public void UpdateFruitDirection()
+    private void RefreshAntenna()
     {
         targetVector = fruitTransform.position - transform.position;
         distance = targetVector.magnitude;

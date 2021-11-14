@@ -20,11 +20,15 @@ public class GameManager : MonoBehaviour
 
     private float timer = 0f;
 
+    public delegate void Tick();
+    public static event Tick OnTick;
+
     // Start is called before the first frame update
     private void Awake()
     {
-        cinecam.Follow = player.transform;
-        cinecam.LookAt = player.transform;
+        var playerTransform = player.transform;
+        cinecam.Follow = playerTransform;
+        cinecam.LookAt = playerTransform;
     }
 
     // Update is called once per frame
@@ -33,8 +37,10 @@ public class GameManager : MonoBehaviour
         timer += Time.deltaTime;
         if (timer >= tickTime)
         {
-            player.Move(grid.GridUnit);
-            timer = 0f;
+            timer -= tickTime;
+            OnTick?.Invoke();
+
+            //player.Move(grid.GridUnit);
         }
     }
 }
