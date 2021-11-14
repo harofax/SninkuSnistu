@@ -395,26 +395,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: -0.06, z: 0}
---- !u!1 &921469952 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 424631842143512072, guid: 42769008d339ca34eb9d27a15afad165, type: 3}
-  m_PrefabInstance: {fileID: 1141177405}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &921469959
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 921469952}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3880283b584e5a408c792e8b87f0d89, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxWobble: 1.28
-  minWobble: 0.79
-  wobbleRate: 1.147
 --- !u!4 &921469965 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 424631842143512084, guid: 42769008d339ca34eb9d27a15afad165, type: 3}
@@ -525,24 +505,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Fruit
       objectReference: {fileID: 0}
-    - target: {fileID: 424631842143512072, guid: 42769008d339ca34eb9d27a15afad165, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 424631842143512084, guid: 42769008d339ca34eb9d27a15afad165, type: 3}
       propertyPath: m_RootOrder
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 424631842143512084, guid: 42769008d339ca34eb9d27a15afad165, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 424631842143512084, guid: 42769008d339ca34eb9d27a15afad165, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 424631842143512084, guid: 42769008d339ca34eb9d27a15afad165, type: 3}
-      propertyPath: m_LocalScale.z
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 424631842143512084, guid: 42769008d339ca34eb9d27a15afad165, type: 3}
@@ -605,22 +569,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 891178782, guid: daa4e5104d1d0764ba53e1652dd11b93, type: 3}
-      propertyPath: m_Intensity
-      value: 2.59
-      objectReference: {fileID: 0}
-    - target: {fileID: 891178782, guid: daa4e5104d1d0764ba53e1652dd11b93, type: 3}
-      propertyPath: m_SpotAngle
-      value: 43.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 891178782, guid: daa4e5104d1d0764ba53e1652dd11b93, type: 3}
-      propertyPath: m_Shadows.m_Bias
-      value: 0.16
-      objectReference: {fileID: 0}
-    - target: {fileID: 1490636471, guid: daa4e5104d1d0764ba53e1652dd11b93, type: 3}
-      propertyPath: turningSpeed
-      value: 2.56
-      objectReference: {fileID: 0}
     - target: {fileID: 1490636471, guid: daa4e5104d1d0764ba53e1652dd11b93, type: 3}
       propertyPath: fruitTransform
       value: 
@@ -927,18 +875,6 @@ PrefabInstance:
     - target: {fileID: 5014704684475795017, guid: 3dcc3de64bd9ba64e8652484683e6ad9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5014704684475795018, guid: 3dcc3de64bd9ba64e8652484683e6ad9, type: 3}
-      propertyPath: gridUnit
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5014704684475795018, guid: 3dcc3de64bd9ba64e8652484683e6ad9, type: 3}
-      propertyPath: gridDimensions.x
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 5014704684475795018, guid: 3dcc3de64bd9ba64e8652484683e6ad9, type: 3}
-      propertyPath: gridDimensions.y
-      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 5014704684475795019, guid: 3dcc3de64bd9ba64e8652484683e6ad9, type: 3}
       propertyPath: m_Name
