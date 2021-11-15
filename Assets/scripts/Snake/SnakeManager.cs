@@ -40,7 +40,9 @@ public class SnakeManager : MonoBehaviour
     private Vector3 nextDir;
     
     private bool isEating;
-    
+    private bool jump;
+    private bool isGrounded;
+
     private void OnEnable()
     {
         GameManager.OnTick += Move;
@@ -66,7 +68,7 @@ public class SnakeManager : MonoBehaviour
 
         nextDir = startDirection;
 
-        AddStartingBody(2);
+        AddStartingBody(8);
     }
 
     private static Vector3 GetStartDirection(Vector3 startPos)
@@ -96,6 +98,12 @@ public class SnakeManager : MonoBehaviour
         {
             nextDir = transform.right;
         }
+
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            jump = true;
+            isGrounded = false;
+        }
     }
 
     public bool Occupied(Vector3Int gridPos)
@@ -110,7 +118,7 @@ public class SnakeManager : MonoBehaviour
         bodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleRate);
 
         snakedList.Add(bodyPart.transform);
-        bodyPartPositions.Add(GetGridPos(bodyPart.transform.position));
+        bodyPartPositions.Add(ConvertToGridPos(bodyPart.transform.position));
     }
 
     private void AddStartingBody(int count)
@@ -121,7 +129,7 @@ public class SnakeManager : MonoBehaviour
         firstBodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleScale);
         
         snakedList.Add(firstBodyPart.transform);
-        bodyPartPositions.Add(GetGridPos(firstBodyPart.transform.position));
+        bodyPartPositions.Add(ConvertToGridPos(firstBodyPart.transform.position));
 
         for (int i = 0; i < count; i++)
         {
@@ -129,7 +137,7 @@ public class SnakeManager : MonoBehaviour
         }
     }
 
-    Vector3Int GetGridPos(Vector3 pos)
+    Vector3Int ConvertToGridPos(Vector3 pos)
     {
         return Vector3Int.RoundToInt(pos / gridUnit);
     }
@@ -144,7 +152,7 @@ public class SnakeManager : MonoBehaviour
 
         Vector3 nextPosition = position + headTransform.forward * gridUnit;
 
-        if (bodyPartPositions.Contains(GetGridPos(nextPosition)))
+        if (jump)//bodyPartPositions.Contains(GetGridPos(nextPosition)))
         {
             nextPosition += transform.up * gridUnit;
         }
@@ -153,19 +161,29 @@ public class SnakeManager : MonoBehaviour
             ApplyGravity(ref nextPosition);
         }
 
+        if (bodyPartPositions.Contains(ConvertToGridPos(nextPosition)))
+        {
+            print("U DIED LMAO LOSER");
+        }
+
         headTransform.position = nextPosition;
         MoveBodyParts();
-        //ApplyGravityToBodyParts();
+        
     }
 
     private void ApplyGravity(ref Vector3 nextPosition)
     {
         Vector3 downDelta = nextPosition + gridUnit * Vector3.down;
-        Vector3Int gridDeltaPos = GetGridPos(downDelta);
+        Vector3Int gridDeltaPos = ConvertToGridPos(downDelta);
 
         if (!bodyPartPositions.Contains(gridDeltaPos) && !tilePositions.Contains(gridDeltaPos))
         {
+            isGrounded = false;
             nextPosition = downDelta;
+        }
+        else
+        {
+            isGrounded = true;
         }
     }
 
@@ -197,18 +215,19 @@ public class SnakeManager : MonoBehaviour
         Transform lastBodyPart = snakedList.Tail.transform;
         Vector3 position = lastBodyPart.position;
         
-        bodyPartPositions.Remove(GetGridPos(position));
+        bodyPartPositions.Remove(ConvertToGridPos(position));
         
         position = previousPosition;
         ApplyGravity(ref position);
         lastBodyPart.position = position;
         
-        bodyPartPositions.Add(GetGridPos(position));
+        bodyPartPositions.Add(ConvertToGridPos(position));
 
         snakedList.RemoveAt(tailIndex);
         snakedList.AddFirst(lastBodyPart);
 
         isEating = false;
+        jump = false;
     }
 
     private void OnTriggerEnter(Collider other)
