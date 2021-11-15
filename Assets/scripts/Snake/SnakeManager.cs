@@ -70,6 +70,10 @@ public class SnakeManager : MonoBehaviour
 
         AddStartingBody(8);
     }
+    
+    // TODO: Add a lower outer ring of map where u can jump up again using ur own body, if ur pro
+    // TODO: Rethink death n jumping. Autojump = more fun, more snake:y
+    // TODO: How die? hmmm
 
     private static Vector3 GetStartDirection(Vector3 startPos)
     {
