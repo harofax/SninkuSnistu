@@ -18,6 +18,10 @@ public class GridController : MonoBehaviour
     public Vector2Int GridDimensions => gridDimensions;
     
     private MapTile[,] grid;
+    
+    private readonly HashSet<Vector3Int> tilePositions = new HashSet<Vector3Int>();
+
+    public HashSet<Vector3Int> TilePositions => tilePositions;
 
     public int GridUnit => gridUnit;
 
@@ -57,7 +61,7 @@ public class GridController : MonoBehaviour
 
     public MapTile GetTile(int x, int y)
     {
-        if ((x < 0 || x > gridDimensions.x) || (y < 0 || y > gridDimensions.y))
+        if (!InBounds(x, y))
         {
             throw new ArgumentOutOfRangeException();
         }
@@ -83,7 +87,13 @@ public class GridController : MonoBehaviour
                 newTile.name = $"Tile [{x}, {y}]";
                 
                 grid[x, y] = newTile;
+                tilePositions.Add(new Vector3Int(x, 0, y));
             }
         }
+    }
+
+    private bool InBounds(int x, int y)
+    {
+        return (x >= 0 && x < gridDimensions.x) && (y >= 0 && y < gridDimensions.y);
     }
 }
