@@ -11,6 +11,12 @@ public class GridController : MonoBehaviour
     
     [SerializeField]
     private Vector2Int gridDimensions;
+
+    [SerializeField, Range(0, 10)]
+    private int outerRingRadius;
+
+    [SerializeField, Range(-5, 5)]
+    private int outerRingHeight;
     
     [SerializeField, Range(1, 6)]
     private int gridUnit = 2;
@@ -40,16 +46,24 @@ public class GridController : MonoBehaviour
             instance = this;
         }
 
-        //Vector3 tileSize = tilePrefab.transform.localScale;
+        if (outerRingRadius > gridDimensions.x || outerRingRadius > gridDimensions.y)
+        {
+            throw new ArgumentOutOfRangeException(paramName: "outerRingRadius", "Radius cannot be larger than grid dimensions");
+        }
+
         tilePrefab.transform.localScale = new Vector3(gridUnit, gridUnit, gridUnit);
-        
         InitializeGrid();
+    }
+    
+    public Vector3Int ConvertToGridPos(Vector3 pos)
+    {
+        return Vector3Int.RoundToInt(pos / gridUnit);
     }
 
     public Vector3 GetRandomPosition(float yLevel)
     {
-        int x = Random.Range(0, gridDimensions.x * gridUnit);
-        int z = Random.Range(0, gridDimensions.y * gridUnit);
+        int x = Random.Range(outerRingRadius, (gridDimensions.x - outerRingRadius)) * gridUnit;
+        int z = Random.Range(outerRingRadius, (gridDimensions.y - outerRingRadius)) * gridUnit;
 
         x = Mathf.CeilToInt(x / gridUnit) * gridUnit;
         z = Mathf.CeilToInt(z / gridUnit) * gridUnit;
@@ -71,23 +85,28 @@ public class GridController : MonoBehaviour
 
     private void InitializeGrid()
     {
-        Vector3 origin = transform.position; // + new Vector3(gridUnit/2f, 0, gridUnit/2f);
-
         grid = new MapTile[gridDimensions.x, gridDimensions.y];
-
-        for (int y = 0; y < gridDimensions.y; y++)
+        
+        for (int z = 0; z < gridDimensions.y; z++)
         {
             for (int x = 0; x < gridDimensions.x; x++)
             {
+                int yOffset = z < outerRingRadius || 
+                              z > gridDimensions.y - outerRingRadius ||
+                              x < outerRingRadius || 
+                              x > gridDimensions.x - outerRingRadius 
+                    ? outerRingHeight 
+                    : 0;
+                
                 MapTile newTile = Instantiate(tilePrefab, transform);
                 
-                Vector3 offset = new Vector3(x * gridUnit, 0, y * gridUnit);
+                Vector3 offset = new Vector3(x, yOffset, z) * gridUnit;
 
                 newTile.transform.position = offset;
-                newTile.name = $"Tile [{x}, {y}]";
+                newTile.name = $"Tile [{x}, {z}]";
                 
-                grid[x, y] = newTile;
-                tilePositions.Add(new Vector3Int(x, 0, y));
+                grid[x, z] = newTile;
+                tilePositions.Add(new Vector3Int(x, yOffset, z));
             }
         }
     }

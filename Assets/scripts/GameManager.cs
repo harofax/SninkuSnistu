@@ -39,8 +39,6 @@ public class GameManager : MonoBehaviour
         {
             timer -= tickTime;
             OnTick?.Invoke();
-
-            //player.Move(grid.GridUnit);
         }
     }
 }

@@ -17,10 +17,11 @@ public class SnakeBodyController : MonoBehaviour
     /// </summary>
     /// <param name="maxWobbleScale">The maximum potential scale the body segment will reach during a wobble.</param>
     /// <param name="minWobbleScale">The minimum potential scale the body segment will reach during a wobble.</param>
-    /// <param name="wobbleInterval">The maximum duration (in seconds) the wobble oscillation between MinWobbleScale and MaxWobbleScale will take.</param>
+    /// <param name="minWobbleDuration">The minimum potential time-scaling a wobble interval will be scaled by.</param>
+    /// <param name="maxWobbleDuration">The maximum potential time-scaling a wobble interval will be scaled by.</param>
     public void InitializeWobble(float minWobbleScale, float maxWobbleScale, float minWobbleDuration, float maxWobbleDuration)
     {
-        float NORMAL_SCALE = 1f;
+        float NORMAL_SCALE = 1;
 
         float SHRINK_SCALE = Random.Range(NORMAL_SCALE * minWobbleScale, NORMAL_SCALE);
         float GROW_SCALE = Random.Range(NORMAL_SCALE, NORMAL_SCALE * maxWobbleScale);
@@ -28,7 +29,5 @@ public class SnakeBodyController : MonoBehaviour
         wobble.MaxWobble = GROW_SCALE;
         wobble.MinWobble = SHRINK_SCALE;
         wobble.WobbleRate = Random.Range(minWobbleDuration, maxWobbleDuration);
-
-        wobble.StartWobbling();
     }
 }

@@ -11,8 +11,8 @@ public class SnakeManager : MonoBehaviour
     [SerializeField]
     private SnakeBodyController snakeBodyPart;
 
-    [SerializeField]
-    private FruitAntenna antenna;
+    [SerializeField, Range(0, 20)]
+    private int startBodyCount;
 
     [Space(15f)]
     
@@ -24,7 +24,7 @@ public class SnakeManager : MonoBehaviour
     
     [Space(10f)]
     
-    [SerializeField, Range(0.1f, 0.8f), Tooltip("The minimum potential duration a wobble can have (in seconds)")]
+    [SerializeField, Range(0.5f, 0.8f), Tooltip("The minimum potential duration a wobble can have (in seconds)")]
     private float minWobbleRate = 0.5f;
 
     [SerializeField, Range(0.8f, 1.8f), Tooltip("The maximum potential duration a wobble can have (in seconds)")]
@@ -32,10 +32,9 @@ public class SnakeManager : MonoBehaviour
 
     private readonly LinkusListus<Transform> snakedList = new LinkusListus<Transform>();
     private readonly HashSet<Vector3Int> bodyPartPositions = new HashSet<Vector3Int>();
-    private HashSet<Vector3Int> tilePositions;
-
-    private int gridUnit;
     
+    private GridController grid;
+
     private Vector3 previousPosition;
     private Vector3 nextDir;
     
@@ -55,12 +54,11 @@ public class SnakeManager : MonoBehaviour
 
     private void Start()
     {
-        tilePositions = GridController.Instance.TilePositions;
-        gridUnit = GridController.Instance.GridUnit;
+        grid = GridController.Instance;
+
+        float START_HEIGHT = grid.GridUnit * 2;
         
-        float START_HEIGHT = gridUnit * 2;
-        
-        Vector3 startPos = GridController.Instance.GetRandomPosition(START_HEIGHT);
+        Vector3 startPos = grid.GetRandomPosition(START_HEIGHT);
         transform.position = startPos;
 
         Vector3 startDirection = GetStartDirection(startPos);
@@ -68,12 +66,8 @@ public class SnakeManager : MonoBehaviour
 
         nextDir = startDirection;
 
-        AddStartingBody(8);
+        AddStartingBody(startBodyCount);
     }
-    
-    // TODO: Add a lower outer ring of map where u can jump up again using ur own body, if ur pro
-    // TODO: Rethink death n jumping. Autojump = more fun, more snake:y
-    // TODO: How die? hmmm
 
     private static Vector3 GetStartDirection(Vector3 startPos)
     {
@@ -103,16 +97,11 @@ public class SnakeManager : MonoBehaviour
             nextDir = transform.right;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (!jump && isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
             jump = true;
             isGrounded = false;
         }
-    }
-
-    public bool Occupied(Vector3Int gridPos)
-    {
-        return bodyPartPositions.Contains(gridPos);
     }
 
     private void AddBodyPart()
@@ -122,7 +111,7 @@ public class SnakeManager : MonoBehaviour
         bodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleRate);
 
         snakedList.Add(bodyPart.transform);
-        bodyPartPositions.Add(ConvertToGridPos(bodyPart.transform.position));
+        bodyPartPositions.Add(grid.ConvertToGridPos(bodyPart.transform.position));
     }
 
     private void AddStartingBody(int count)
@@ -133,7 +122,9 @@ public class SnakeManager : MonoBehaviour
         firstBodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleScale);
         
         snakedList.Add(firstBodyPart.transform);
-        bodyPartPositions.Add(ConvertToGridPos(firstBodyPart.transform.position));
+        bodyPartPositions.Add(grid.ConvertToGridPos(firstBodyPart.transform.position));
+
+        count--;
 
         for (int i = 0; i < count; i++)
         {
@@ -141,10 +132,7 @@ public class SnakeManager : MonoBehaviour
         }
     }
 
-    Vector3Int ConvertToGridPos(Vector3 pos)
-    {
-        return Vector3Int.RoundToInt(pos / gridUnit);
-    }
+    
 
     private void Move()
     {
@@ -154,35 +142,39 @@ public class SnakeManager : MonoBehaviour
         
         previousPosition = position;
 
-        Vector3 nextPosition = position + headTransform.forward * gridUnit;
+        Vector3 nextPosition = position + headTransform.forward * grid.GridUnit;
 
-        if (jump)//bodyPartPositions.Contains(GetGridPos(nextPosition)))
+        if (jump || bodyPartPositions.Contains(grid.ConvertToGridPos(nextPosition)))
         {
-            nextPosition += transform.up * gridUnit;
+            nextPosition += transform.up * grid.GridUnit;
         }
         else
         {
             ApplyGravity(ref nextPosition);
         }
 
-        if (bodyPartPositions.Contains(ConvertToGridPos(nextPosition)))
+        if (bodyPartPositions.Contains(grid.ConvertToGridPos(nextPosition)))
         {
             print("U DIED LMAO LOSER");
         }
 
         headTransform.position = nextPosition;
         MoveBodyParts();
+        if (IsHovering())
+        {
+            ApplyGravityToBodyParts();
+        }
+        
         
     }
 
     private void ApplyGravity(ref Vector3 nextPosition)
     {
-        Vector3 downDelta = nextPosition + gridUnit * Vector3.down;
-        Vector3Int gridDeltaPos = ConvertToGridPos(downDelta);
+        Vector3 downDelta = nextPosition + grid.GridUnit * Vector3.down;
+        Vector3Int gridDeltaPos = grid.ConvertToGridPos(downDelta);
 
-        if (!bodyPartPositions.Contains(gridDeltaPos) && !tilePositions.Contains(gridDeltaPos))
+        if (!bodyPartPositions.Contains(gridDeltaPos) && !grid.TilePositions.Contains(gridDeltaPos))
         {
-            isGrounded = false;
             nextPosition = downDelta;
         }
         else
@@ -191,19 +183,36 @@ public class SnakeManager : MonoBehaviour
         }
     }
 
-    // private void ApplyGravityToBodyParts()
-    // {
-    //     for (int i = 0; i < snakedList.Count - 1; i++)
-    //     {
-    //         Transform bodyTransform = snakedList[i];
-    //         Vector3 nextPos = bodyTransform.position;
-    //
-    //         bodyPartPositions.Remove(nextPos);
-    //         ApplyGravity(ref nextPos);
-    //         bodyTransform.position = nextPos;
-    //         bodyPartPositions.Add(nextPos);
-    //     }
-    // }
+    private void ApplyGravityToBodyParts()
+    {
+        for (int i = 0; i < snakedList.Count; i++)
+        {
+            Transform bodyTransform = snakedList[i];
+            Vector3 segmentPos = bodyTransform.position;
+            Vector3Int segmentGridPos = grid.ConvertToGridPos(segmentPos);
+
+            bodyPartPositions.Remove(segmentGridPos);
+            
+            ApplyGravity(ref segmentPos);
+            bodyTransform.position = segmentPos;
+            segmentGridPos = grid.ConvertToGridPos(segmentPos);
+            
+            bodyPartPositions.Add(segmentGridPos);
+        }
+    }
+
+    private bool IsHovering()
+    {
+        bool hover = false;
+        for (int i = 0; i < snakedList.Count; i++)
+        {
+            Vector3 downDelta = snakedList[i].position + Vector3.down * grid.GridUnit;
+            Vector3Int downGridPos = grid.ConvertToGridPos(downDelta);
+            hover = !grid.TilePositions.Contains(downGridPos) && !bodyPartPositions.Contains(downGridPos);
+        }
+
+        return hover;
+    }
 
     private void MoveBodyParts()
     {
@@ -219,13 +228,13 @@ public class SnakeManager : MonoBehaviour
         Transform lastBodyPart = snakedList.Tail.transform;
         Vector3 position = lastBodyPart.position;
         
-        bodyPartPositions.Remove(ConvertToGridPos(position));
+        bodyPartPositions.Remove(grid.ConvertToGridPos(position));
         
         position = previousPosition;
-        ApplyGravity(ref position);
+        //ApplyGravity(ref position);
         lastBodyPart.position = position;
         
-        bodyPartPositions.Add(ConvertToGridPos(position));
+        bodyPartPositions.Add(grid.ConvertToGridPos(position));
 
         snakedList.RemoveAt(tailIndex);
         snakedList.AddFirst(lastBodyPart);
