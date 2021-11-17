@@ -7,28 +7,19 @@ using Random = UnityEngine.Random;
 public class GridController : MonoBehaviour
 {
     [SerializeField]
-    private MapTile tilePrefab;
-    
+    private GameObject worldPrefab;
+
     [SerializeField]
-    private Vector2Int gridDimensions;
+    private Vector3Int gridPreview;
 
-    [SerializeField, Range(0, 10)]
-    private int outerRingRadius;
-
-    [SerializeField, Range(-5, 5)]
-    private int outerRingHeight;
-    
     [SerializeField, Range(1, 6)]
     private int gridUnit = 2;
     
-    public Vector2Int GridDimensions => gridDimensions;
+    private Vector3Int gridDimensions;
+    public Vector3Int GridDimensions => gridDimensions;
     
-    private MapTile[,] grid;
+    private bool[,,] grid;
     
-    private readonly HashSet<Vector3Int> tilePositions = new HashSet<Vector3Int>();
-
-    public HashSet<Vector3Int> TilePositions => tilePositions;
-
     public int GridUnit => gridUnit;
 
     private static GridController instance;
@@ -45,74 +36,55 @@ public class GridController : MonoBehaviour
         {
             instance = this;
         }
-
-        if (outerRingRadius > gridDimensions.x || outerRingRadius > gridDimensions.y)
-        {
-            throw new ArgumentOutOfRangeException(paramName: "outerRingRadius", "Radius cannot be larger than grid dimensions");
-        }
-
-        tilePrefab.transform.localScale = new Vector3(gridUnit, gridUnit, gridUnit);
-        InitializeGrid();
     }
     
     public Vector3Int ConvertToGridPos(Vector3 pos)
     {
+        // int x = Mathf.CeilToInt(pos.x / gridUnit) * gridUnit;
+        // int y = Mathf.CeilToInt(pos.y / gridUnit) * gridUnit;
+        // int z = Mathf.CeilToInt(pos.z / gridUnit) * gridUnit;
+        //
+        // return new Vector3Int(x, y, z);
         return Vector3Int.RoundToInt(pos / gridUnit);
+    }
+
+    public Vector3 ConvertToWorldSpace(Vector3Int gridPos)
+    {
+        return gridPos * gridUnit;
     }
 
     public Vector3 GetRandomPosition(float yLevel)
     {
-        int x = Random.Range(outerRingRadius, (gridDimensions.x - outerRingRadius)) * gridUnit;
-        int z = Random.Range(outerRingRadius, (gridDimensions.y - outerRingRadius)) * gridUnit;
-
-        x = Mathf.CeilToInt(x / gridUnit) * gridUnit;
-        z = Mathf.CeilToInt(z / gridUnit) * gridUnit;
-
+        int x = Random.Range(0, gridDimensions.x) * gridUnit;
+        int z = Random.Range(0, gridDimensions.z) * gridUnit;
+    
         Vector3 randomPosition = new Vector3(x, yLevel, z);
-
+    
         return randomPosition;
     }
 
-    public MapTile GetTile(int x, int y)
+    internal void InitializeGrid(int xSize, int ySize, int zSize)
     {
-        if (!InBounds(x, y))
-        {
-            throw new ArgumentOutOfRangeException();
-        }
-
-        return grid[x, y];
-    }
-
-    private void InitializeGrid()
-    {
-        grid = new MapTile[gridDimensions.x, gridDimensions.y];
+        gridDimensions = new Vector3Int(xSize, ySize, zSize);
         
-        for (int z = 0; z < gridDimensions.y; z++)
-        {
-            for (int x = 0; x < gridDimensions.x; x++)
-            {
-                int yOffset = z < outerRingRadius || 
-                              z > gridDimensions.y - outerRingRadius ||
-                              x < outerRingRadius || 
-                              x > gridDimensions.x - outerRingRadius 
-                    ? outerRingHeight 
-                    : 0;
-                
-                MapTile newTile = Instantiate(tilePrefab, transform);
-                
-                Vector3 offset = new Vector3(x, yOffset, z) * gridUnit;
+        grid = new bool[gridDimensions.x, gridDimensions.y, gridDimensions.z];
 
-                newTile.transform.position = offset;
-                newTile.name = $"Tile [{x}, {z}]";
-                
-                grid[x, z] = newTile;
-                tilePositions.Add(new Vector3Int(x, yOffset, z));
-            }
-        }
+        // for (int x = 0; x < gridDimensions.x; x++)
+        // {
+        //     for (int y = 0; y < gridDimensions.y; y++)
+        //     {
+        //         for (int z = 0; z < gridDimensions.z; z++)
+        //         {
+        //             grid[x, y, z] = false;
+        //         }
+        //     }
+        // }
     }
 
-    private bool InBounds(int x, int y)
+    private bool InBounds(Vector3Int gridCell)
     {
-        return (x >= 0 && x < gridDimensions.x) && (y >= 0 && y < gridDimensions.y);
+        return (gridCell.x >= 0 && gridCell.x < gridDimensions.x) && 
+               (gridCell.y >= 0 && gridCell.y < gridDimensions.y) && 
+               (gridCell.z >= 0 && gridCell.z < gridDimensions.z);
     }
 }

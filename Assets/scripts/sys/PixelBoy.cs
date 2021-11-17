@@ -2,21 +2,30 @@
 // - edited by @Nothke to use screen height for #LOWREZJAM
 
 // ^ Original credit in the file, don't blame me please ^
+
+using System;
 using UnityEngine;
 using System.Collections;
- 
-[ExecuteInEditMode]
+
 [AddComponentMenu("Image Effects/PixelBoy")]
 public class PixelBoy : MonoBehaviour
 {
     public int h = 64;
     private int w;
 
+    private Camera cam;
+
+    private void Awake()
+    {
+        cam = GetComponent<Camera>();
+        float ratio = ((float)cam.pixelWidth) / (float)cam.pixelHeight;
+        w = Mathf.RoundToInt(h * ratio);
+    }
+
     private void Update()
     {
  
-        float ratio = ((float)Camera.main.pixelWidth) / (float)Camera.main.pixelHeight;
-        w = Mathf.RoundToInt(h * ratio);
+        
     }
 
     private void OnRenderImage(RenderTexture source, RenderTexture destination)

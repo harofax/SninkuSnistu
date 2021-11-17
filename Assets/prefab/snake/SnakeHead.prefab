@@ -848,10 +848,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   snakeBodyPart: {fileID: 4960749748930705336, guid: 2f54bcf7b607059439f3d2a25c1975fd, type: 3}
-  antenna: {fileID: 1490636471}
+  startBodyCount: 3
   minWobbleScale: 0.928
   maxWobbleScale: 1.523
-  minWobbleRate: 0.653
+  minWobbleRate: 0.605
   maxWobbleRate: 1.21
 --- !u!1 &4974101654310477930
 GameObject:
