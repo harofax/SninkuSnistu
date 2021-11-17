@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 
@@ -20,7 +21,7 @@ public static class LevelLoader
             this.boundingBox = boundingBox;
         }
     }
-    public static LevelData TextFileToCharArray(string fileName, string path)
+    public static LevelData ParseLevelData(string fileName, string path)
     {
         int xMax = -1;
         int yMax = -1;
@@ -29,46 +30,55 @@ public static class LevelLoader
         try
         {
             char[][] level;
-            using (StreamReader file =
-                new StreamReader(Path.Combine(path, fileName)))
+            string[] rows;
+
+            string fullPath = Path.Combine(path, fileName);
+
+            if (File.Exists(fullPath))
             {
-                int rows = (int)file.BaseStream.Length;
-                zMax = rows;
-                
-                level = new char[rows][];
-                    
-                for (int i = 0; i < rows; i++)
-                {
-                    string row = file.ReadLine();
-                    if (row != null)
-                    {
-                        if (row.Length > xMax) xMax = row.Length;
-                        level[i] = row.ToCharArray();
-                        foreach (var tileChar in row)
-                        {
-                            int height;
-                            try
-                            {
-                                height = int.Parse(tileChar.ToString());
-                            }
-                            catch (FormatException e)
-                            {
-                                string logPath = Path.Combine(path, LevelLoaderLogFile);
-                                using StreamWriter logFile = File.CreateText(logPath);
-                                logFile.WriteLine("The character " + tileChar + " is not allowed in the level file.");
-                                logFile.WriteLine("Please only use integers when making a level.");
-                                logFile.WriteLine(e);
-                                throw;
-                            }
-                            if (height > yMax) yMax = height;
-                        }
-                    }
-                }
-
-                Vector3Int boundingBox = new Vector3Int(xMax, yMax, zMax);
-
-                return new LevelData(level, boundingBox);
+                rows = File.ReadAllLines(fullPath);
             }
+            else
+            {
+                throw new ArgumentException("Failed to open " + fullPath);
+            }
+            
+            zMax = rows.Length;
+            level = new char[zMax][];
+            
+
+            for (int i = 0; i < rows.Length; i++)
+            {
+                string row = rows[i];
+                
+                if (row.Length > xMax) xMax = row.Length;
+                
+                level[i] = row.ToCharArray();
+                
+                foreach (var tileChar in row)
+                {
+                    int height;
+                    try
+                    {
+                        height = int.Parse(tileChar.ToString());
+                    }
+                    catch (FormatException e)
+                    {
+                        string logPath = Path.Combine(path, LevelLoaderLogFile);
+                        using StreamWriter logFile = File.CreateText(logPath);
+                        logFile.WriteLine("The character " + tileChar + " is not allowed in the level file.");
+                        logFile.WriteLine("Please only use integers when making a level.");
+                        logFile.WriteLine(e);
+                        throw;
+                    }
+                    if (height > yMax) yMax = height;
+                }
+                
+            }
+
+            Vector3Int boundingBox = new Vector3Int(xMax, yMax, zMax);
+
+            return new LevelData(level, boundingBox);
         }
         catch (System.Exception e)
         {

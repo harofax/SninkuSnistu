@@ -1,0 +1,4 @@
+The level file C:/Users/harofax/Downloads/gamedev/unityprojects/SninkuSnistu/Assets/StreamingAssets\levels\snake_level_0.txt could not be loaded.
+System.OverflowException
+  at (wrapper managed-to-native) System.Object.__icall_wrapper_ves_icall_array_new_specific(intptr,int)
+  at LevelLoader.ParseLevelData (System.String fileName, System.String path) [0x0003a] in C:\Users\harofax\Downloads\gamedev\unityprojects\SninkuSnistu\Assets\scripts\sys\LevelLoader.cs:47 
