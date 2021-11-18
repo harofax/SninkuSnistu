@@ -978,7 +978,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5796928644021315827, guid: cfd799752a2a62b4487f949d065b2882, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 29.91
+      value: 178.85
       objectReference: {fileID: 0}
     - target: {fileID: 5796928644021315827, guid: cfd799752a2a62b4487f949d065b2882, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1014,7 +1014,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5796928644021315830, guid: cfd799752a2a62b4487f949d065b2882, type: 3}
       propertyPath: m_Name
-      value: Camera
+      value: LowResCam
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cfd799752a2a62b4487f949d065b2882, type: 3}

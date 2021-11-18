@@ -6,12 +6,6 @@ using Random = UnityEngine.Random;
 
 public class GridController : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject worldPrefab;
-
-    [SerializeField]
-    private Vector3Int gridPreview;
-
     [SerializeField, Range(1, 6)]
     private int gridUnit = 2;
     
@@ -40,11 +34,6 @@ public class GridController : MonoBehaviour
     
     public Vector3Int ConvertToGridPos(Vector3 pos)
     {
-        // int x = Mathf.CeilToInt(pos.x / gridUnit) * gridUnit;
-        // int y = Mathf.CeilToInt(pos.y / gridUnit) * gridUnit;
-        // int z = Mathf.CeilToInt(pos.z / gridUnit) * gridUnit;
-        //
-        // return new Vector3Int(x, y, z);
         return Vector3Int.RoundToInt(pos / gridUnit);
     }
 
@@ -57,9 +46,13 @@ public class GridController : MonoBehaviour
     {
         int x = Random.Range(0, gridDimensions.x) * gridUnit;
         int z = Random.Range(0, gridDimensions.z) * gridUnit;
+        
+        x = Mathf.CeilToInt(x / gridUnit) * gridUnit;
+        z = Mathf.CeilToInt(z / gridUnit) * gridUnit;
     
         Vector3 randomPosition = new Vector3(x, yLevel, z);
     
+        
         return randomPosition;
     }
 
@@ -68,17 +61,6 @@ public class GridController : MonoBehaviour
         gridDimensions = new Vector3Int(xSize, ySize, zSize);
         
         grid = new bool[gridDimensions.x, gridDimensions.y, gridDimensions.z];
-
-        // for (int x = 0; x < gridDimensions.x; x++)
-        // {
-        //     for (int y = 0; y < gridDimensions.y; y++)
-        //     {
-        //         for (int z = 0; z < gridDimensions.z; z++)
-        //         {
-        //             grid[x, y, z] = false;
-        //         }
-        //     }
-        // }
     }
 
     private bool InBounds(Vector3Int gridCell)

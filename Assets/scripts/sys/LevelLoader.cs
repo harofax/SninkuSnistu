@@ -9,27 +9,23 @@ public static class LevelLoader
     private const string LevelLoaderLogFile = "level_loader.log";
     public struct LevelData
     {
-        private char[][] data;
-        private Vector3Int boundingBox;
+        public char[][] Data { get; }
 
-        public char[][] Data => data;
-        public Vector3Int BoundingBox => boundingBox;
+        public Vector3Int BoundingBox { get; }
 
         public LevelData(char[][] data, Vector3Int boundingBox)
         {
-            this.data = data;
-            this.boundingBox = boundingBox;
+            this.Data = data;
+            this.BoundingBox = boundingBox;
         }
     }
     public static LevelData ParseLevelData(string fileName, string path)
     {
         int xMax = -1;
         int yMax = -1;
-        int zMax = -1;
-        
+
         try
         {
-            char[][] level;
             string[] rows;
 
             string fullPath = Path.Combine(path, fileName);
@@ -43,8 +39,8 @@ public static class LevelLoader
                 throw new ArgumentException("Failed to open " + fullPath);
             }
             
-            zMax = rows.Length;
-            level = new char[zMax][];
+            int zMax = rows.Length;
+            char[][] level = new char[zMax][];
             
 
             for (int i = 0; i < rows.Length; i++)
