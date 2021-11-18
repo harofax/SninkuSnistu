@@ -61,7 +61,7 @@ public class SnakeManager : MonoBehaviour
 
         float START_HEIGHT = grid.GridUnit * 6;
         
-        Vector3 startPos = grid.GetRandomPosition(START_HEIGHT);
+        Vector3 startPos = grid.GetRandomPosition() * grid.GridUnit;
         transform.position = startPos;
 
         Vector3 startDirection = GetStartDirection(startPos);

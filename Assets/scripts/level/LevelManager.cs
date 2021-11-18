@@ -22,6 +22,8 @@ public class LevelManager : MonoBehaviour
     private string levelFilePath;
 
     private static LevelManager instance;
+    private int tileSize;
+    
     public static LevelManager Instance => instance;
 
     // Start is called before the first frame update
@@ -35,26 +37,24 @@ public class LevelManager : MonoBehaviour
         {
             instance = this;
         }
+
+        tileSize = GridController.Instance.GridUnit;
+        tilePrefab.transform.localScale = new Vector3(tileSize, tileSize, tileSize);
      
         levelFilePath = Path.Combine(Application.streamingAssetsPath, SNAKE_LEVEL_FOLDER);
-        numOfLevels = LevelLoader.CountLevels(levelFilePath, SNAKE_LEVEL_FILENAME, SNAKE_LEVEL_FILETYPE);
-        print("nmbr of levels: " +numOfLevels);
+        numOfLevels = LevelLoader.CountLevels(levelFilePath, SNAKE_LEVEL_FILENAME, SNAKE_LEVEL_FILETYPE); 
     }
 
     private void Start()
     {
-        LoadLevel(2);
+        LoadLevel(0);
     }
 
     public void LoadLevel(int i)
     {
         levelIndex = i;
-        print("loading level: " + levelIndex);
         string levelFile = SNAKE_LEVEL_FILENAME + levelIndex + SNAKE_LEVEL_FILETYPE;
-        
-        print("filename: " + levelFile);
-        print("level file path: " + levelFilePath);
-        
+
         var levelData = LevelLoader.ParseLevelData(levelFile, levelFilePath);
 
         ConstructLevel(levelData.Data, levelData.BoundingBox);
@@ -68,13 +68,12 @@ public class LevelManager : MonoBehaviour
 
     private void ConstructLevel(char[][] levelData, Vector3Int boundingBox)
     {
-        Vector3Int worldSize = new Vector3Int(
-            boundingBox.x + worldBuffer.x * 2,
-            boundingBox.y + worldBuffer.y * 2,
-            boundingBox.z + worldBuffer.z * 2
-        );
+        Vector3 origin = transform.position;
+        
+        Vector3Int worldSize = boundingBox + (worldBuffer * 2);
 
         bool[,,] grid = new bool[worldSize.x, worldSize.y, worldSize.z];
+        HashSet<Vector3Int> occupiedTiles = new HashSet<Vector3Int>(worldSize.x*worldSize.y);
 
         for (int z = 0; z < levelData.GetLength(0); z++) // used to be 0 -> worldsize
         {
@@ -88,13 +87,13 @@ public class LevelManager : MonoBehaviour
 
                     grid[gridSpaceCell.x, gridSpaceCell.y, gridSpaceCell.z] = true;
                     var tile = Instantiate(tilePrefab, transform);
-                    tile.transform.position = gridSpaceCell;
+                    tile.transform.position = origin + gridSpaceCell * tileSize;
                     tile.name = $"Tile [{gridSpaceCell.x}, {gridSpaceCell.y}, {gridSpaceCell.z}]";
                 }
             }
         }
 
-        GridController.Instance.InitializeGrid(worldSize.x, worldSize.y, worldSize.z);
+        GridController.Instance.InitializeGrid(grid, worldSize.x, worldSize.y, worldSize.z);
     }
 
 
@@ -102,4 +101,6 @@ public class LevelManager : MonoBehaviour
     void Update()
     {
     }
+    
+
 }

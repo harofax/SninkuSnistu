@@ -10,14 +10,8 @@ public class FruitController : MonoBehaviour
        MoveToRandomPosition();
     }
 
-    // Update is called once per frame
-    private void Update()
-    {
-        
-    }
-
     public void MoveToRandomPosition()
     {
-        transform.position = GridController.Instance.GetRandomPosition(GridController.Instance.GridUnit);
+        transform.position = GridController.Instance.GetRandomPosition() * GridController.Instance.GridUnit;
     }
 }
