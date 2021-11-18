@@ -72,8 +72,8 @@ public class LevelManager : MonoBehaviour
         
         Vector3Int worldSize = boundingBox + (worldBuffer * 2);
 
-        bool[,,] grid = new bool[worldSize.x, worldSize.y, worldSize.z];
-        HashSet<Vector3Int> occupiedTiles = new HashSet<Vector3Int>(worldSize.x*worldSize.y);
+        //bool[,,] grid = new bool[worldSize.x, worldSize.y, worldSize.z];
+        HashSet<Vector3Int> occupiedTiles = new HashSet<Vector3Int>();
 
         for (int z = 0; z < levelData.GetLength(0); z++) // used to be 0 -> worldsize
         {
@@ -85,7 +85,8 @@ public class LevelManager : MonoBehaviour
                     Vector3Int levelCell = new Vector3Int(x, y, z);
                     Vector3Int gridSpaceCell = worldBuffer + levelCell;
 
-                    grid[gridSpaceCell.x, gridSpaceCell.y, gridSpaceCell.z] = true;
+                    //grid[gridSpaceCell.x, gridSpaceCell.y, gridSpaceCell.z] = true;
+                    occupiedTiles.Add(gridSpaceCell);
                     var tile = Instantiate(tilePrefab, transform);
                     tile.transform.position = origin + gridSpaceCell * tileSize;
                     tile.name = $"Tile [{gridSpaceCell.x}, {gridSpaceCell.y}, {gridSpaceCell.z}]";
@@ -93,7 +94,7 @@ public class LevelManager : MonoBehaviour
             }
         }
 
-        GridController.Instance.InitializeGrid(grid, worldSize.x, worldSize.y, worldSize.z);
+        GridController.Instance.InitializeGrid(occupiedTiles, worldSize.x, worldSize.y, worldSize.z);
     }
 
 

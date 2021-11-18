@@ -12,9 +12,9 @@ public class GridController : MonoBehaviour
     private Vector3Int gridDimensions;
     public Vector3Int GridDimensions => gridDimensions;
     
-    private bool[,,] grid;
-    
-    
+    //private bool[,,] grid;
+    private HashSet<Vector3Int> occupiedCells;
+
     public int GridUnit => gridUnit;
 
     private static GridController instance;
@@ -49,7 +49,7 @@ public class GridController : MonoBehaviour
         int z = Random.Range(0, gridDimensions.z);
         int y = 0;
 
-        while (CheckAccessible(x, y, z) == false)
+        while (IsFreeGridPos(x, y, z) == false)
         {
             if (y == gridDimensions.y) return GetRandomPosition();
             y++;
@@ -60,46 +60,78 @@ public class GridController : MonoBehaviour
         return randomPosition;
     }
 
-    private bool CheckAccessible(int x, int y, int z)
-    {   
+    private bool IsFreeGridPos(int x, int y, int z)
+    {
+        
+        Vector3Int cellPos = WrapGridPos(new Vector3Int(x, y, z) + Vector3Int.down);
+
+        bool occupied = occupiedCells.Contains(cellPos);
+
+        bool accessNorth = occupiedCells.Contains(WrapGridPos(cellPos + Vector3Int.forward));
+        bool accessSouth = occupiedCells.Contains(WrapGridPos(cellPos + Vector3Int.back));
+        bool accessWest = occupiedCells.Contains(WrapGridPos(cellPos + Vector3Int.left));
+        bool accessEast = occupiedCells.Contains(WrapGridPos(cellPos + Vector3Int.right));
+        
         int BoolToInt(bool value)
         {
             return value ? 1 : 0;
         }
         
-        Vector3Int tilePos = new Vector3Int(x, y, z) + Vector3Int.down;
-        
-        bool tile = GetGridCell(tilePos);
-
-        bool accessNorth = GetGridCell(tilePos + Vector3Int.forward); // grid[x, y - 1, z + 1]
-        bool accessSouth = GetGridCell(tilePos + Vector3Int.back); //grid[x, y - 1, z - 1];
-        bool accessWest = GetGridCell(tilePos + Vector3Int.left); //grid[x - 1, y - 1, z];
-        bool accessEast = GetGridCell(tilePos + Vector3Int.right); //grid[x + 1, y - 1, z + 1];
-
-        int accessPoints =
+        int amountOfAccess = 
             BoolToInt(accessNorth) +
             BoolToInt(accessSouth) +
             BoolToInt(accessWest) +
             BoolToInt(accessEast);
 
-        return (tile && (accessPoints >= 2));
+        return occupied && (amountOfAccess >= 2);
+        
     }
+
+    // private bool CheckAccessible(int x, int y, int z)
+    // {   
+    //     int BoolToInt(bool value)
+    //     {
+    //         return value ? 1 : 0;
+    //     }
+    //     
+    //     Vector3Int tilePos = new Vector3Int(x, y, z) + Vector3Int.down;
+    //     
+    //     bool tile = WrapGridPos(tilePos);
+    //
+    //     bool accessNorth = WrapGridPos(tilePos + Vector3Int.forward); // grid[x, y - 1, z + 1]
+    //     bool accessSouth = WrapGridPos(tilePos + Vector3Int.back); //grid[x, y - 1, z - 1];
+    //     bool accessWest = WrapGridPos(tilePos + Vector3Int.left); //grid[x - 1, y - 1, z];
+    //     bool accessEast = WrapGridPos(tilePos + Vector3Int.right); //grid[x + 1, y - 1, z + 1];
+    //
+    //     int accessPoints =
+    //         BoolToInt(accessNorth) +
+    //         BoolToInt(accessSouth) +
+    //         BoolToInt(accessWest) +
+    //         BoolToInt(accessEast);
+    //
+    //     return (tile && (accessPoints >= 2));
+    // }
     
     
 
-    internal void InitializeGrid(bool[,,] gridData, int xSize, int ySize, int zSize)
+    internal void InitializeGrid(HashSet<Vector3Int> occupied, int xSize, int ySize, int zSize) //bool[,,] gridData
     {
         gridDimensions = new Vector3Int(xSize, ySize, zSize);
-        grid = gridData;
+        occupiedCells = occupied;
     }
 
-    private bool GetGridCell(Vector3Int gridCellPos)
+    /// <summary>
+    /// Wraps the given Vec3Int to a point inside the grid.
+    /// </summary>
+    /// <param name="gridCellPos"></param>
+    /// <returns></returns>
+    private Vector3Int WrapGridPos(Vector3Int gridCellPos)
     {
         int x = Freya.Mathfs.Mod(gridCellPos.x, gridDimensions.x); // (gridCellPos.x % gridDimensions.x + gridDimensions.x + 1) % gridDimensions.x;
         int y = Freya.Mathfs.Mod(gridCellPos.y, gridDimensions.y); //(gridCellPos.y % gridDimensions.y + gridDimensions.y + 1) % gridDimensions.y;
         int z = Freya.Mathfs.Mod(gridCellPos.z, gridDimensions.z); //(gridCellPos.z % gridDimensions.z + gridDimensions.z + 1) % gridDimensions.z;
         
-        return grid[x, y, z];
+        return new Vector3Int(x, y, z);
     }
 
     private bool InBounds(Vector3Int gridCell)
