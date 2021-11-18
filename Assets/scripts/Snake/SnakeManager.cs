@@ -114,8 +114,11 @@ public class SnakeManager : MonoBehaviour
         bodyPart.name = "body segment #" + snakedList.Count;
         bodyPart.InitializeWobble(minWobbleScale, maxWobbleScale, minWobbleRate, maxWobbleRate);
 
+        Vector3Int bodyPartGridPos = grid.ConvertToGridPos(bodyPart.transform.position);
+
         snakedList.Add(bodyPart.transform);
-        bodyPartPositions.Add(grid.ConvertToGridPos(bodyPart.transform.position));
+        bodyPartPositions.Add(bodyPartGridPos);
+        grid.OccupiedCells.Add(bodyPartGridPos);
     }
 
     private void AddStartingBody(int count)
@@ -127,6 +130,7 @@ public class SnakeManager : MonoBehaviour
         
         snakedList.Add(firstBodyPart.transform);
         bodyPartPositions.Add(grid.ConvertToGridPos(firstBodyPart.transform.position));
+        grid.OccupiedCells.Add(grid.ConvertToGridPos(firstBodyPart.transform.position));
 
         count--;
 
@@ -147,7 +151,10 @@ public class SnakeManager : MonoBehaviour
         previousPosition = position;
 
         Vector3 nextPosition = position + headTransform.forward * grid.GridUnit;
+        Vector3Int nextGridPos = grid.WrapGridPos(grid.ConvertToGridPos(nextPosition));
 
+        nextPosition = grid.ConvertToWorldSpace(nextGridPos);
+        
         if (jump || bodyPartPositions.Contains(grid.ConvertToGridPos(nextPosition)))
         {
             nextPosition += transform.up * grid.GridUnit;
@@ -165,10 +172,10 @@ public class SnakeManager : MonoBehaviour
         headTransform.position = nextPosition;
         MoveBodyParts();
         // TODO: Integrate with new grid system
-        // if (IsHovering())
-        // {
-        //     ApplyGravityToBodyParts();
-        // }
+        if (IsHovering())
+        {
+            ApplyGravityToBodyParts();
+        }
         
         
     }
@@ -178,15 +185,15 @@ public class SnakeManager : MonoBehaviour
         Vector3 downDelta = nextPosition + grid.GridUnit * Vector3.down;
         Vector3Int gridDeltaPos = grid.ConvertToGridPos(downDelta);
 
-        // TODO: integrate with new grid system
-        // if (!bodyPartPositions.Contains(gridDeltaPos) && !grid.TilePositions.Contains(gridDeltaPos))
-        // {
-        //     nextPosition = downDelta;
-        // }
-        // else
-        // {
-        //     isGrounded = true;
-        // }
+       // TODO: integrate with new grid system
+        if (!bodyPartPositions.Contains(gridDeltaPos) && !grid.OccupiedCells.Contains(gridDeltaPos))
+        {
+            nextPosition = downDelta;
+        }
+        else
+        {
+            isGrounded = true;
+        }
     }
 
     private void ApplyGravityToBodyParts()
@@ -198,28 +205,30 @@ public class SnakeManager : MonoBehaviour
             Vector3Int segmentGridPos = grid.ConvertToGridPos(segmentPos);
 
             bodyPartPositions.Remove(segmentGridPos);
+            grid.OccupiedCells.Remove(segmentGridPos);
             
             ApplyGravity(ref segmentPos);
             bodyTransform.position = segmentPos;
             segmentGridPos = grid.ConvertToGridPos(segmentPos);
-            
+
             bodyPartPositions.Add(segmentGridPos);
+            grid.OccupiedCells.Add(segmentGridPos);
         }
     }
 
     // TODO: Integrate with new grid system
-    // private bool IsHovering()
-    // {
-    //     bool hover = false;
-    //     for (int i = 0; i < snakedList.Count; i++)
-    //     {
-    //         Vector3 downDelta = snakedList[i].position + Vector3.down * grid.GridUnit;
-    //         Vector3Int downGridPos = grid.ConvertToGridPos(downDelta);
-    //         hover = !grid.TilePositions.Contains(downGridPos) && !bodyPartPositions.Contains(downGridPos);
-    //     }
-    //
-    //     return hover;
-    // }
+    private bool IsHovering()
+    {
+        bool hover = false;
+        for (int i = 0; i < snakedList.Count; i++)
+        {
+            Vector3 downDelta = snakedList[i].position + Vector3.down * grid.GridUnit;
+            Vector3Int downGridPos = grid.ConvertToGridPos(downDelta);
+            hover = !grid.OccupiedCells.Contains(downGridPos) && !bodyPartPositions.Contains(downGridPos);
+        }
+    
+        return hover;
+    }
 
     private void MoveBodyParts()
     {
@@ -236,12 +245,14 @@ public class SnakeManager : MonoBehaviour
         Vector3 position = lastBodyPart.position;
         
         bodyPartPositions.Remove(grid.ConvertToGridPos(position));
+        grid.OccupiedCells.Remove(grid.ConvertToGridPos(position));
         
         position = previousPosition;
         //ApplyGravity(ref position);
         lastBodyPart.position = position;
         
         bodyPartPositions.Add(grid.ConvertToGridPos(position));
+        grid.OccupiedCells.Add(grid.ConvertToGridPos(position));
 
         snakedList.RemoveAt(tailIndex);
         snakedList.AddFirst(lastBodyPart);

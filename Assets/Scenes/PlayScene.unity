@@ -965,7 +965,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5520331730597323635, guid: 80f3643dfc2444444bc3e95fc5413c27, type: 3}
       propertyPath: worldBuffer.y
-      value: 2
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5520331730597323635, guid: 80f3643dfc2444444bc3e95fc5413c27, type: 3}
       propertyPath: worldBuffer.z

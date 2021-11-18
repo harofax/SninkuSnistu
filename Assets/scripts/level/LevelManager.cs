@@ -96,12 +96,4 @@ public class LevelManager : MonoBehaviour
 
         GridController.Instance.InitializeGrid(occupiedTiles, worldSize.x, worldSize.y, worldSize.z);
     }
-
-
-    // Update is called once per frame
-    void Update()
-    {
-    }
-    
-
 }

@@ -14,6 +14,7 @@ public class GridController : MonoBehaviour
     
     //private bool[,,] grid;
     private HashSet<Vector3Int> occupiedCells;
+    public HashSet<Vector3Int> OccupiedCells => occupiedCells;
 
     public int GridUnit => gridUnit;
 
@@ -125,7 +126,7 @@ public class GridController : MonoBehaviour
     /// </summary>
     /// <param name="gridCellPos"></param>
     /// <returns></returns>
-    private Vector3Int WrapGridPos(Vector3Int gridCellPos)
+    public Vector3Int WrapGridPos(Vector3Int gridCellPos)
     {
         int x = Freya.Mathfs.Mod(gridCellPos.x, gridDimensions.x); // (gridCellPos.x % gridDimensions.x + gridDimensions.x + 1) % gridDimensions.x;
         int y = Freya.Mathfs.Mod(gridCellPos.y, gridDimensions.y); //(gridCellPos.y % gridDimensions.y + gridDimensions.y + 1) % gridDimensions.y;
