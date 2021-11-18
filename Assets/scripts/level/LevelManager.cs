@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class LevelGenerator : MonoBehaviour
+public class LevelManager : MonoBehaviour
 {
     [SerializeField,
      Tooltip("This denotes how much empty space should exist outside the level boundaries in each dimension")]
@@ -18,15 +18,15 @@ public class LevelGenerator : MonoBehaviour
     private const string SNAKE_LEVEL_FILETYPE = ".txt";
 
     private int levelIndex = 0;
+    private int numOfLevels;
     private string levelFilePath;
 
-    private static LevelGenerator instance;
-    public static LevelGenerator Instance => instance;
+    private static LevelManager instance;
+    public static LevelManager Instance => instance;
 
     // Start is called before the first frame update
     void Awake()
     {
-        levelFilePath = Application.streamingAssetsPath;
         if (instance != null && instance != this)
         {
             Destroy(this.gameObject);
@@ -35,20 +35,27 @@ public class LevelGenerator : MonoBehaviour
         {
             instance = this;
         }
+     
+        levelFilePath = Path.Combine(Application.streamingAssetsPath, SNAKE_LEVEL_FOLDER);
+        numOfLevels = LevelLoader.CountLevels(levelFilePath, SNAKE_LEVEL_FILENAME, SNAKE_LEVEL_FILETYPE);
+        print("nmbr of levels: " +numOfLevels);
     }
 
     private void Start()
     {
-        LoadLevel(0);
+        LoadLevel(2);
     }
 
     public void LoadLevel(int i)
     {
         levelIndex = i;
+        print("loading level: " + levelIndex);
         string levelFile = SNAKE_LEVEL_FILENAME + levelIndex + SNAKE_LEVEL_FILETYPE;
-        string pathToLevelFile = Path.Combine(levelFilePath, SNAKE_LEVEL_FOLDER);
-
-        var levelData = LevelLoader.ParseLevelData(levelFile, pathToLevelFile);
+        
+        print("filename: " + levelFile);
+        print("level file path: " + levelFilePath);
+        
+        var levelData = LevelLoader.ParseLevelData(levelFile, levelFilePath);
 
         ConstructLevel(levelData.Data, levelData.BoundingBox);
     }
@@ -74,7 +81,7 @@ public class LevelGenerator : MonoBehaviour
             for (int x = 0; x < levelData[z].Length; x++) // etc
             {
                 int pillarHeight = int.Parse(levelData[z][x].ToString());
-                for (int y = 0; y <= pillarHeight; y++)
+                for (int y = 0; y < pillarHeight; y++)
                 {
                     Vector3Int levelCell = new Vector3Int(x, y, z);
                     Vector3Int gridSpaceCell = worldBuffer + levelCell;

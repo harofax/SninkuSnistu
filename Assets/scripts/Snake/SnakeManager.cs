@@ -42,6 +42,9 @@ public class SnakeManager : MonoBehaviour
     private bool jump;
     private bool isGrounded;
 
+    public delegate void EatFruit();
+    public static event EatFruit OnFruitEaten;
+    
     private void OnEnable()
     {
         GameManager.OnTick += Move;
@@ -252,6 +255,7 @@ public class SnakeManager : MonoBehaviour
         if (!isEating && other.TryGetComponent(out FruitController fruit))
         {
             isEating = true;
+            OnFruitEaten?.Invoke();
             fruit.MoveToRandomPosition();
             AddBodyPart();
         }

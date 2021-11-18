@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private SnakeManager player;
 
+    private int currentScore = 0;
+    private const int SCORE_TO_ADVANCE_LEVEL = 20;
+
     [SerializeField] 
     private CinemachineVirtualCamera cinecam;
 
@@ -39,6 +42,15 @@ public class GameManager : MonoBehaviour
         {
             timer -= tickTime;
             OnTick?.Invoke();
+        }
+    }
+
+    private void IncreaseScore()
+    {
+        currentScore++;
+        if (currentScore > SCORE_TO_ADVANCE_LEVEL)
+        {
+            LevelManager.Instance.LoadNextLevel();
         }
     }
 }
