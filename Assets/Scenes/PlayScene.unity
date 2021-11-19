@@ -208,7 +208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa7155796051b734daa718462081dc5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_BindingMode: 1
+  m_BindingMode: 5
   m_FollowOffset: {x: 0, y: 11.72, z: -5.14}
   m_XDamping: 2.9
   m_YDamping: 3.6
@@ -502,6 +502,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 921469959, guid: 42769008d339ca34eb9d27a15afad165, type: 3}
+      propertyPath: minWobble
+      value: 0.91
+      objectReference: {fileID: 0}
+    - target: {fileID: 921469959, guid: 42769008d339ca34eb9d27a15afad165, type: 3}
       propertyPath: wobbleRate
       value: 1
       objectReference: {fileID: 0}
@@ -573,6 +577,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1144846362, guid: daa4e5104d1d0764ba53e1652dd11b93, type: 3}
+      propertyPath: minWobbleScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1490636471, guid: daa4e5104d1d0764ba53e1652dd11b93, type: 3}
       propertyPath: fruitTransform
       value: 
@@ -694,7 +702,7 @@ Camera:
   m_TargetTexture: {fileID: 8400000, guid: 006a33bb536152b4f91c8e72961a0bb4, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 3
-  m_HDR: 1
+  m_HDR: 0
   m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
@@ -961,7 +969,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5520331730597323635, guid: 80f3643dfc2444444bc3e95fc5413c27, type: 3}
       propertyPath: worldBuffer.x
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5520331730597323635, guid: 80f3643dfc2444444bc3e95fc5413c27, type: 3}
       propertyPath: worldBuffer.y
@@ -969,7 +977,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5520331730597323635, guid: 80f3643dfc2444444bc3e95fc5413c27, type: 3}
       propertyPath: worldBuffer.z
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 80f3643dfc2444444bc3e95fc5413c27, type: 3}
@@ -986,7 +994,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5796928644021315827, guid: cfd799752a2a62b4487f949d065b2882, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -234.07
       objectReference: {fileID: 0}
     - target: {fileID: 5796928644021315827, guid: cfd799752a2a62b4487f949d065b2882, type: 3}
       propertyPath: m_LocalPosition.y

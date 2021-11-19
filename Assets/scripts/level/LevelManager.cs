@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
@@ -53,12 +54,18 @@ public class LevelManager : MonoBehaviour
     public void LoadLevel(int i)
     {
         levelIndex = i;
+        if (i >= numOfLevels)
+        {
+            SceneManager.LoadScene(WinSceneIndex);
+        }
         string levelFile = SNAKE_LEVEL_FILENAME + levelIndex + SNAKE_LEVEL_FILETYPE;
 
         var levelData = LevelLoader.ParseLevelData(levelFile, levelFilePath);
 
         ConstructLevel(levelData.Data, levelData.BoundingBox);
     }
+
+    private const int WinSceneIndex = 2;
 
     public void LoadNextLevel()
     {

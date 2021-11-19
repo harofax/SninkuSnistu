@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
@@ -12,9 +13,6 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private SnakeManager player;
 
-    private int currentScore = 0;
-    private const int SCORE_TO_ADVANCE_LEVEL = 20;
-
     [SerializeField] 
     private CinemachineVirtualCamera cinecam;
 
@@ -22,9 +20,22 @@ public class GameManager : MonoBehaviour
     private float tickTime = 0.2f;
 
     private float timer = 0f;
+    
+    private int currentScore = 0;
+    private const int SCORE_TO_ADVANCE_LEVEL = 4;
 
     public delegate void Tick();
     public static event Tick OnTick;
+
+    private void OnEnable()
+    {
+        SnakeManager.OnFruitEaten += IncreaseScore;
+    }
+
+    private void OnDisable()
+    {
+        SnakeManager.OnFruitEaten -= IncreaseScore;
+    }
 
     // Start is called before the first frame update
     private void Awake()
@@ -48,7 +59,7 @@ public class GameManager : MonoBehaviour
     private void IncreaseScore()
     {
         currentScore++;
-        if (currentScore > SCORE_TO_ADVANCE_LEVEL)
+        if (currentScore >= SCORE_TO_ADVANCE_LEVEL)
         {
             LevelManager.Instance.LoadNextLevel();
         }
