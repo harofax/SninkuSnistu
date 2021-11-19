@@ -42,6 +42,7 @@ public class SnakeManager : MonoBehaviour
     private bool isEating;
     private bool jump;
     private bool isGrounded;
+    private readonly int gameOverSceneIndex = 2;
 
     public delegate void EatFruit();
     public static event EatFruit OnFruitEaten;
@@ -164,7 +165,7 @@ public class SnakeManager : MonoBehaviour
 
         if (bodyPartPositions.Contains(grid.ConvertToGridPos(nextPosition)) || grid.OccupiedCells.Contains(grid.ConvertToGridPos(nextPosition)))
         {
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene(gameOverSceneIndex);
         }
 
         headTransform.position = nextPosition;

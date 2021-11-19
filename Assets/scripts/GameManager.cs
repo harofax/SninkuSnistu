@@ -5,6 +5,8 @@ using Cinemachine;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -22,15 +24,19 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private TMP_Text scoreDisplay;
-    
+
+    [SerializeField]
+    private GameObject pauseUI;
+
     [SerializeField, Range(1, 200)]
     private int scoreToAdvanceLevel = 4;
 
     private float timer = 0f;
     
     private int currentScore = 0;
-    
-    
+
+    private bool isPaused;
+    private readonly int MainMenuSceneIndex = 0;
 
     public delegate void Tick();
     public static event Tick OnTick;
@@ -62,12 +68,34 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            TogglePauseMenu();
+        }
         timer += Time.deltaTime;
         if (timer >= tickTime)
         {
             timer -= tickTime;
             OnTick?.Invoke();
         }
+    }
+
+    public void TogglePauseMenu()
+    {
+        isPaused = !isPaused;
+        pauseUI.SetActive(!pauseUI.activeInHierarchy);
+        Time.timeScale = isPaused ? 0 : 1;
+    }
+
+    public void ReturnToMenu()
+    {
+        TogglePauseMenu();
+        SceneManager.LoadScene(MainMenuSceneIndex);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 
     private void IncreaseScore()
