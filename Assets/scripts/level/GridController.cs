@@ -6,22 +6,15 @@ using Random = UnityEngine.Random;
 
 public class GridController : MonoBehaviour
 {
-    [SerializeField]
-    private MapTile tilePrefab;
-    
-    [SerializeField]
-    private Vector2Int gridDimensions;
-    
     [SerializeField, Range(1, 6)]
     private int gridUnit = 2;
     
-    public Vector2Int GridDimensions => gridDimensions;
+    private Vector3Int gridDimensions;
+    public Vector3Int GridDimensions => gridDimensions;
     
-    private MapTile[,] grid;
-    
-    private readonly HashSet<Vector3Int> tilePositions = new HashSet<Vector3Int>();
-
-    public HashSet<Vector3Int> TilePositions => tilePositions;
+    //private bool[,,] grid;
+    private HashSet<Vector3Int> occupiedCells = new HashSet<Vector3Int>();
+    public HashSet<Vector3Int> OccupiedCells => occupiedCells;
 
     public int GridUnit => gridUnit;
 
@@ -39,61 +32,110 @@ public class GridController : MonoBehaviour
         {
             instance = this;
         }
-
-        //Vector3 tileSize = tilePrefab.transform.localScale;
-        tilePrefab.transform.localScale = new Vector3(gridUnit, gridUnit, gridUnit);
-        
-        InitializeGrid();
+    }
+    
+    public Vector3Int ConvertToGridPos(Vector3 pos)
+    {
+        return Vector3Int.RoundToInt(pos / gridUnit);
     }
 
-    public Vector3 GetRandomPosition(float yLevel)
+    public Vector3 ConvertToWorldSpace(Vector3Int gridPos)
     {
-        int x = Random.Range(0, gridDimensions.x * gridUnit);
-        int z = Random.Range(0, gridDimensions.y * gridUnit);
+        return gridPos * gridUnit;
+    }
 
-        x = Mathf.CeilToInt(x / gridUnit) * gridUnit;
-        z = Mathf.CeilToInt(z / gridUnit) * gridUnit;
+    public Vector3Int GetRandomPosition()
+    {
+        int x = Random.Range(0, gridDimensions.x);
+        int z = Random.Range(0, gridDimensions.z);
+        int y = 0;
 
-        Vector3 randomPosition = new Vector3(x, yLevel, z);
-
+        while (IsFreeGridPos(x, y, z) == false)
+        {
+            if (y == gridDimensions.y) return GetRandomPosition();
+            y++;
+        }
+    
+        Vector3Int randomPosition = new Vector3Int(x, y, z);
+        
         return randomPosition;
     }
 
-    public MapTile GetTile(int x, int y)
+    private bool IsFreeGridPos(int x, int y, int z)
     {
-        if (!InBounds(x, y))
+        
+        Vector3Int potentialPos = WrapGridPos(new Vector3Int(x, y, z));
+        Vector3Int underPos = potentialPos + Vector3Int.down;
+
+        bool emptySpace = !occupiedCells.Contains(potentialPos);
+        bool standingGround = occupiedCells.Contains(underPos);
+        
+
+        bool accessNorth = occupiedCells.Contains(WrapGridPos(underPos + Vector3Int.forward));
+        bool accessSouth = occupiedCells.Contains(WrapGridPos(underPos + Vector3Int.back));
+        bool accessWest = occupiedCells.Contains(WrapGridPos(underPos + Vector3Int.left));
+        bool accessEast = occupiedCells.Contains(WrapGridPos(underPos + Vector3Int.right));
+        
+        int BoolToInt(bool value)
         {
-            throw new ArgumentOutOfRangeException();
+            return value ? 1 : 0;
         }
+        
+        int amountOfAccess = 
+            BoolToInt(accessNorth) +
+            BoolToInt(accessSouth) +
+            BoolToInt(accessWest) +
+            BoolToInt(accessEast);
 
-        return grid[x, y];
+        return emptySpace && standingGround && (amountOfAccess >= 2);
+        
     }
 
-    private void InitializeGrid()
+    internal void InitializeGrid(HashSet<Vector3Int> occupied, int xSize, int ySize, int zSize)
     {
-        Vector3 origin = transform.position; // + new Vector3(gridUnit/2f, 0, gridUnit/2f);
+        gridDimensions = new Vector3Int(xSize, ySize, zSize);
+        occupiedCells = new HashSet<Vector3Int>();
+        occupiedCells = occupied;
+    }
 
-        grid = new MapTile[gridDimensions.x, gridDimensions.y];
+    /// <summary>
+    /// Wraps the given Vec3Int to a point inside the grid.
+    /// </summary>
+    /// <param name="gridCellPos"></param>
+    /// <returns></returns>
+    public Vector3Int WrapGridPos(Vector3Int gridCellPos)
+    {
+        int x = Freya.Mathfs.Mod(gridCellPos.x, gridDimensions.x); // (gridCellPos.x % gridDimensions.x + gridDimensions.x + 1) % gridDimensions.x;
+        int y = Freya.Mathfs.Mod(gridCellPos.y, gridDimensions.y); //(gridCellPos.y % gridDimensions.y + gridDimensions.y + 1) % gridDimensions.y;
+        int z = Freya.Mathfs.Mod(gridCellPos.z, gridDimensions.z); //(gridCellPos.z % gridDimensions.z + gridDimensions.z + 1) % gridDimensions.z;
+        
+        return new Vector3Int(x, y, z);
+    }
 
-        for (int y = 0; y < gridDimensions.y; y++)
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        Color prev = Gizmos.color;
+        Gizmos.color = Color.yellow;
+
+        foreach (var tilePos in occupiedCells) 
         {
-            for (int x = 0; x < gridDimensions.x; x++)
-            {
-                MapTile newTile = Instantiate(tilePrefab, transform);
-                
-                Vector3 offset = new Vector3(x * gridUnit, 0, y * gridUnit);
-
-                newTile.transform.position = offset;
-                newTile.name = $"Tile [{x}, {y}]";
-                
-                grid[x, y] = newTile;
-                tilePositions.Add(new Vector3Int(x, 0, y));
-            }
+            Gizmos.DrawCube(tilePos * gridUnit, Vector3.one);
         }
-    }
+        
+        // for (int x = 0; x < gridDimensions.x; x++)
+        // {
+        //     for (int y = 0; y < gridDimensions.y; y++)
+        //     {
+        //         for (int z = 0; z < gridDimensions.z; z++)
+        //         {
+        //             if (grid[x, y, z]) Gizmos.DrawCube(new Vector3(x,y,z) * gridUnit, new Vector3(1, 1, 1));
+        //         }
+        //     }
+        // }
 
-    private bool InBounds(int x, int y)
-    {
-        return (x >= 0 && x < gridDimensions.x) && (y >= 0 && y < gridDimensions.y);
+        Gizmos.color = prev;
     }
+#endif 
+    
 }

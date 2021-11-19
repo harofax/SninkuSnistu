@@ -1,0 +1,3 @@
+The level file C:/Users/harofax/Downloads/gamedev/unityprojects/SninkuSnistu/Assets/StreamingAssets\levels\snake_level_3.txt could not be loaded.
+System.ArgumentException: Failed to open C:/Users/harofax/Downloads/gamedev/unityprojects/SninkuSnistu/Assets/StreamingAssets\levels\snake_level_3.txt
+  at LevelLoader.ParseLevelData (System.String fileName, System.String path) [0x00029] in C:\Users\harofax\Downloads\gamedev\unityprojects\SninkuSnistu\Assets\scripts\sys\LevelLoader.cs:41 
