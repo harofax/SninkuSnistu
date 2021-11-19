@@ -13,7 +13,7 @@ public class GridController : MonoBehaviour
     public Vector3Int GridDimensions => gridDimensions;
     
     //private bool[,,] grid;
-    private HashSet<Vector3Int> occupiedCells;
+    private HashSet<Vector3Int> occupiedCells = new HashSet<Vector3Int>();
     public HashSet<Vector3Int> OccupiedCells => occupiedCells;
 
     public int GridUnit => gridUnit;
@@ -118,6 +118,7 @@ public class GridController : MonoBehaviour
     internal void InitializeGrid(HashSet<Vector3Int> occupied, int xSize, int ySize, int zSize) //bool[,,] gridData
     {
         gridDimensions = new Vector3Int(xSize, ySize, zSize);
+        occupiedCells = new HashSet<Vector3Int>();
         occupiedCells = occupied;
     }
 
@@ -142,24 +143,30 @@ public class GridController : MonoBehaviour
                (gridCell.z >= 0 && gridCell.z < gridDimensions.z);
     }
  
-// #if UNITY_EDITOR
-//     private void OnDrawGizmos()
-//     {
-//         Color prev = Gizmos.color;
-//         Gizmos.color = Color.yellow;
-//         for (int x = 0; x < gridDimensions.x; x++)
-//         {
-//             for (int y = 0; y < gridDimensions.y; y++)
-//             {
-//                 for (int z = 0; z < gridDimensions.z; z++)
-//                 {
-//                     if (grid[x, y, z]) Gizmos.DrawCube(new Vector3(x,y,z) * gridUnit, new Vector3(1, 1, 1));
-//                 }
-//             }
-//         }
-//
-//         Gizmos.color = prev;
-//     }
-// #endif 
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        Color prev = Gizmos.color;
+        Gizmos.color = Color.yellow;
+
+        foreach (var tilePos in occupiedCells) 
+        {
+            Gizmos.DrawCube(tilePos * gridUnit, Vector3.one);
+        }
+        
+        // for (int x = 0; x < gridDimensions.x; x++)
+        // {
+        //     for (int y = 0; y < gridDimensions.y; y++)
+        //     {
+        //         for (int z = 0; z < gridDimensions.z; z++)
+        //         {
+        //             if (grid[x, y, z]) Gizmos.DrawCube(new Vector3(x,y,z) * gridUnit, new Vector3(1, 1, 1));
+        //         }
+        //     }
+        // }
+
+        Gizmos.color = prev;
+    }
+#endif 
     
 }
