@@ -5,6 +5,7 @@ using System.Security;
 using ADT;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SnakeManager : MonoBehaviour
 {
@@ -164,7 +165,7 @@ public class SnakeManager : MonoBehaviour
 
         if (bodyPartPositions.Contains(grid.ConvertToGridPos(nextPosition)) || grid.OccupiedCells.Contains(grid.ConvertToGridPos(nextPosition)))
         {
-            print("U DIED LMAO LOSER");
+            SceneManager.LoadScene(0);
         }
 
         headTransform.position = nextPosition;
