@@ -153,7 +153,7 @@ public class SnakeManager : MonoBehaviour
 
         nextPosition = grid.ConvertToWorldSpace(nextGridPos);
         
-        if (isGrounded && (jump || bodyPartPositions.Contains(grid.ConvertToGridPos(nextPosition)) || grid.OccupiedCells.Contains(grid.ConvertToGridPos(nextPosition))))
+        if (jump || bodyPartPositions.Contains(grid.ConvertToGridPos(nextPosition)) || grid.OccupiedCells.Contains(grid.ConvertToGridPos(nextPosition)))
         {
             nextPosition += transform.up * grid.GridUnit;
         }
