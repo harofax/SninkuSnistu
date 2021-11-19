@@ -151,10 +151,10 @@ Light:
   serializedVersion: 10
   m_Type: 0
   m_Shape: 0
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 4.4
   m_Range: 28.9
-  m_SpotAngle: 52.8
+  m_SpotAngle: 27.172804
   m_InnerSpotAngle: 18.62761
   m_CookieSize: 10
   m_Shadows:
@@ -391,7 +391,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: GAME OVER
+  m_text: You won!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -400,8 +400,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190335
-  m_fontColor: {r: 1, g: 0, b: 0, a: 1}
+    rgba: 4282122234
+  m_fontColor: {r: 0.9808095, g: 1, b: 0.23113209, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -418,7 +418,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 57.1
+  m_fontSize: 72
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -545,14 +545,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 553089314}
-  m_LocalRotation: {x: 0.22942266, y: 0.32882935, z: -0.08268772, w: 0.9123592}
-  m_LocalPosition: {x: -4.9, y: 4.39, z: -6.79}
+  m_LocalRotation: {x: -0.013264088, y: 0, z: 0, w: 0.999912}
+  m_LocalPosition: {x: 0, y: 0.18, z: -9.08}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 28.23, y: 39.64, z: 0}
+  m_LocalEulerAnglesHint: {x: -1.52, y: 0, z: 0}
 --- !u!114 &553089318
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -794,7 +794,7 @@ Light:
   serializedVersion: 10
   m_Type: 0
   m_Shape: 0
-  m_Color: {r: 1, g: 0.5330188, b: 0.5330188, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 8.41
   m_Range: 25.32
   m_SpotAngle: 65.8
@@ -888,7 +888,7 @@ Light:
   serializedVersion: 10
   m_Type: 0
   m_Shape: 0
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2.78
   m_Range: 25.32
   m_SpotAngle: 47.8

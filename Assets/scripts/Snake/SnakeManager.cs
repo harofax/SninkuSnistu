@@ -60,8 +60,7 @@ public class SnakeManager : MonoBehaviour
     {
         grid = GridController.Instance;
 
-        Vector3 startPos = grid.GetRandomPosition() * grid.GridUnit;
-        transform.position = startPos;
+        Vector3 startPos = MoveToRandomPosition();        
 
         Vector3 startDirection = GetStartDirection(startPos);
         transform.rotation = Quaternion.LookRotation(startDirection);
@@ -263,5 +262,12 @@ public class SnakeManager : MonoBehaviour
             fruit.MoveToRandomPosition();
             AddBodyPart();
         }
+    }
+
+    public Vector3 MoveToRandomPosition()
+    {
+        Vector3 startPos = grid.GetRandomPosition() * grid.GridUnit;
+        transform.position = startPos;
+        return startPos;
     }
 }

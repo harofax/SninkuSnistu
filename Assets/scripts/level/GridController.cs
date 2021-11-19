@@ -91,7 +91,7 @@ public class GridController : MonoBehaviour
         
     }
 
-    internal void InitializeGrid(HashSet<Vector3Int> occupied, int xSize, int ySize, int zSize) //bool[,,] gridData
+    internal void InitializeGrid(HashSet<Vector3Int> occupied, int xSize, int ySize, int zSize)
     {
         gridDimensions = new Vector3Int(xSize, ySize, zSize);
         occupiedCells = new HashSet<Vector3Int>();

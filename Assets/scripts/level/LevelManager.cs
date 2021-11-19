@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Pool;
 using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
@@ -14,6 +15,8 @@ public class LevelManager : MonoBehaviour
     [SerializeField]
     private GameObject tilePrefab;
 
+    private List<GameObject> spawnedTiles = new List<GameObject>(1000);
+
     private const string SNAKE_LEVEL_FOLDER = "levels";
     private const string SNAKE_LEVEL_FILENAME = "snake_level_";
     private const string SNAKE_LEVEL_FILETYPE = ".txt";
@@ -21,10 +24,12 @@ public class LevelManager : MonoBehaviour
     private int levelIndex = 0;
     private int numOfLevels;
     private string levelFilePath;
+    
+    private const int WinSceneIndex = 3;
 
     private static LevelManager instance;
     private int tileSize;
-    
+
     public static LevelManager Instance => instance;
 
     // Start is called before the first frame update
@@ -41,14 +46,21 @@ public class LevelManager : MonoBehaviour
 
         tileSize = GridController.Instance.GridUnit;
         tilePrefab.transform.localScale = new Vector3(tileSize, tileSize, tileSize);
-     
+
         levelFilePath = Path.Combine(Application.streamingAssetsPath, SNAKE_LEVEL_FOLDER);
-        numOfLevels = LevelLoader.CountLevels(levelFilePath, SNAKE_LEVEL_FILENAME, SNAKE_LEVEL_FILETYPE); 
+        numOfLevels = LevelLoader.CountLevels(levelFilePath, SNAKE_LEVEL_FILENAME, SNAKE_LEVEL_FILETYPE);
+    }
+
+    public void ClearLevel()
+    {
+        foreach (var spawnedTile in spawnedTiles)
+        {
+            Destroy(spawnedTile);
+        }
     }
 
     private void Start()
     {
-        LoadLevel(0);
     }
 
     public void LoadLevel(int i)
@@ -57,15 +69,17 @@ public class LevelManager : MonoBehaviour
         if (i >= numOfLevels)
         {
             SceneManager.LoadScene(WinSceneIndex);
+            return;
         }
+
         string levelFile = SNAKE_LEVEL_FILENAME + levelIndex + SNAKE_LEVEL_FILETYPE;
 
         var levelData = LevelLoader.ParseLevelData(levelFile, levelFilePath);
-
+        
         ConstructLevel(levelData.Data, levelData.BoundingBox);
     }
 
-    private const int WinSceneIndex = 2;
+    
 
     public void LoadNextLevel()
     {
@@ -76,7 +90,7 @@ public class LevelManager : MonoBehaviour
     private void ConstructLevel(char[][] levelData, Vector3Int boundingBox)
     {
         Vector3 origin = transform.position;
-        
+
         Vector3Int worldSize = boundingBox + (worldBuffer * 2);
 
         //bool[,,] grid = new bool[worldSize.x, worldSize.y, worldSize.z];
@@ -97,6 +111,7 @@ public class LevelManager : MonoBehaviour
                     var tile = Instantiate(tilePrefab, transform);
                     tile.transform.position = origin + gridSpaceCell * tileSize;
                     tile.name = $"Tile [{gridSpaceCell.x}, {gridSpaceCell.y}, {gridSpaceCell.z}]";
+                    spawnedTiles.Add(tile);
                 }
             }
         }
