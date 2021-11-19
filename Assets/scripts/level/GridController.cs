@@ -64,14 +64,17 @@ public class GridController : MonoBehaviour
     private bool IsFreeGridPos(int x, int y, int z)
     {
         
-        Vector3Int cellPos = WrapGridPos(new Vector3Int(x, y, z) + Vector3Int.down);
+        Vector3Int potentialPos = WrapGridPos(new Vector3Int(x, y, z));
+        Vector3Int underPos = potentialPos + Vector3Int.down;
 
-        bool occupied = occupiedCells.Contains(cellPos);
+        bool emptySpace = !occupiedCells.Contains(potentialPos);
+        bool standingGround = occupiedCells.Contains(underPos);
+        
 
-        bool accessNorth = occupiedCells.Contains(WrapGridPos(cellPos + Vector3Int.forward));
-        bool accessSouth = occupiedCells.Contains(WrapGridPos(cellPos + Vector3Int.back));
-        bool accessWest = occupiedCells.Contains(WrapGridPos(cellPos + Vector3Int.left));
-        bool accessEast = occupiedCells.Contains(WrapGridPos(cellPos + Vector3Int.right));
+        bool accessNorth = occupiedCells.Contains(WrapGridPos(underPos + Vector3Int.forward));
+        bool accessSouth = occupiedCells.Contains(WrapGridPos(underPos + Vector3Int.back));
+        bool accessWest = occupiedCells.Contains(WrapGridPos(underPos + Vector3Int.left));
+        bool accessEast = occupiedCells.Contains(WrapGridPos(underPos + Vector3Int.right));
         
         int BoolToInt(bool value)
         {
@@ -84,36 +87,9 @@ public class GridController : MonoBehaviour
             BoolToInt(accessWest) +
             BoolToInt(accessEast);
 
-        return occupied && (amountOfAccess >= 2);
+        return emptySpace && standingGround && (amountOfAccess >= 2);
         
     }
-
-    // private bool CheckAccessible(int x, int y, int z)
-    // {   
-    //     int BoolToInt(bool value)
-    //     {
-    //         return value ? 1 : 0;
-    //     }
-    //     
-    //     Vector3Int tilePos = new Vector3Int(x, y, z) + Vector3Int.down;
-    //     
-    //     bool tile = WrapGridPos(tilePos);
-    //
-    //     bool accessNorth = WrapGridPos(tilePos + Vector3Int.forward); // grid[x, y - 1, z + 1]
-    //     bool accessSouth = WrapGridPos(tilePos + Vector3Int.back); //grid[x, y - 1, z - 1];
-    //     bool accessWest = WrapGridPos(tilePos + Vector3Int.left); //grid[x - 1, y - 1, z];
-    //     bool accessEast = WrapGridPos(tilePos + Vector3Int.right); //grid[x + 1, y - 1, z + 1];
-    //
-    //     int accessPoints =
-    //         BoolToInt(accessNorth) +
-    //         BoolToInt(accessSouth) +
-    //         BoolToInt(accessWest) +
-    //         BoolToInt(accessEast);
-    //
-    //     return (tile && (accessPoints >= 2));
-    // }
-    
-    
 
     internal void InitializeGrid(HashSet<Vector3Int> occupied, int xSize, int ySize, int zSize) //bool[,,] gridData
     {
@@ -136,13 +112,6 @@ public class GridController : MonoBehaviour
         return new Vector3Int(x, y, z);
     }
 
-    private bool InBounds(Vector3Int gridCell)
-    {
-        return (gridCell.x >= 0 && gridCell.x < gridDimensions.x) && 
-               (gridCell.y >= 0 && gridCell.y < gridDimensions.y) && 
-               (gridCell.z >= 0 && gridCell.z < gridDimensions.z);
-    }
- 
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {

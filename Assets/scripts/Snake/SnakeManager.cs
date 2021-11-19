@@ -59,8 +59,6 @@ public class SnakeManager : MonoBehaviour
     {
         grid = GridController.Instance;
 
-        float START_HEIGHT = grid.GridUnit * 6;
-        
         Vector3 startPos = grid.GetRandomPosition() * grid.GridUnit;
         transform.position = startPos;
 
@@ -155,7 +153,7 @@ public class SnakeManager : MonoBehaviour
 
         nextPosition = grid.ConvertToWorldSpace(nextGridPos);
         
-        if (jump || bodyPartPositions.Contains(grid.ConvertToGridPos(nextPosition)))
+        if (isGrounded && (jump || bodyPartPositions.Contains(grid.ConvertToGridPos(nextPosition)) || grid.OccupiedCells.Contains(grid.ConvertToGridPos(nextPosition))))
         {
             nextPosition += transform.up * grid.GridUnit;
         }
@@ -164,7 +162,7 @@ public class SnakeManager : MonoBehaviour
             ApplyGravity(ref nextPosition);
         }
 
-        if (bodyPartPositions.Contains(grid.ConvertToGridPos(nextPosition)))
+        if (bodyPartPositions.Contains(grid.ConvertToGridPos(nextPosition)) || grid.OccupiedCells.Contains(grid.ConvertToGridPos(nextPosition)))
         {
             print("U DIED LMAO LOSER");
         }
@@ -232,11 +230,6 @@ public class SnakeManager : MonoBehaviour
 
     private void MoveBodyParts()
     {
-        // for (int i = 0; i < snakedList.Count; i++)
-        // {
-        //     (snakedList[i].transform.position, previousPosition) = (previousPosition, snakedList[i].transform.position);
-        // }
-        
         if (snakedList.Count == 0) return;
 
         int tailIndex = snakedList.Count - 1;
@@ -248,7 +241,6 @@ public class SnakeManager : MonoBehaviour
         grid.OccupiedCells.Remove(grid.ConvertToGridPos(position));
         
         position = previousPosition;
-        //ApplyGravity(ref position);
         lastBodyPart.position = position;
         
         bodyPartPositions.Add(grid.ConvertToGridPos(position));

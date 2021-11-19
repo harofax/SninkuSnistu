@@ -8,9 +8,6 @@ using UnityEngine.Events;
 public class GameManager : MonoBehaviour
 {
     [SerializeField]
-    private GridController grid;
-    
-    [SerializeField]
     private SnakeManager player;
 
     [SerializeField] 

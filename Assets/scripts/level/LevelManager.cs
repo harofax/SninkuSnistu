@@ -48,7 +48,7 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
-        LoadLevel(1);
+        LoadLevel(2);
     }
 
     public void LoadLevel(int i)
